@@ -9,7 +9,7 @@ public class Movement : MonoBehaviour
 	//private bool canMove = true;
 	private float nextMoveTime = 0f;
 
-	public float moveSpeed = 5f;
+	public float moveSpeed = 1f;
 
 	private void Awake()
 	{
@@ -40,11 +40,17 @@ public class Movement : MonoBehaviour
 
 	private void Move()
 	{
-		animator.SetBool("JumpBool", true);
+		animator.speed = moveSpeed * 2;
+		animator.SetTrigger("Jump");
 		Vector3 moveDirection = new Vector3(movementInput.x, 0f, movementInput.y);
 		//transform.Translate(moveDirection * moveSpeed * Time.deltaTime, Space.World);
 		transform.Translate(moveDirection * moveSpeed, Space.World);
-		animator.SetBool("JumpBool", false);
+
+		if (!animator.GetCurrentAnimatorStateInfo(0).IsName("Jump") && !animator.IsInTransition(0))
+		{
+			animator.speed = 1f;
+			animator.SetTrigger("Idle");
+		}
 	}
 
 	/// <summary>
@@ -59,11 +65,20 @@ public class Movement : MonoBehaviour
 			float targetAngle = Mathf.Atan2(movementInput.x, movementInput.y) * Mathf.Rad2Deg;
 
 			// Create a rotation only around the Y-axis
-			Quaternion toRotation = Quaternion.Euler(-90f, targetAngle, 0f);
+			Quaternion toRotation = Quaternion.Euler(0f, targetAngle, 0f);
 
 			// Snap the rotation directly
 			transform.rotation = toRotation;
 		}
+	}
+
+	bool IsAnimationPlaying(string animationName)
+	{
+		// Get the current state of the Animator
+		AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+
+		// Check if the specified animation is playing by comparing the name
+		return stateInfo.IsName(animationName);
 	}
 }
 
