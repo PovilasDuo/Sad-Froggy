@@ -1,5 +1,6 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
-
 public class Movement : MonoBehaviour
 {
 	public Animator animator;
@@ -26,30 +27,64 @@ public class Movement : MonoBehaviour
 		animator = GetComponent<Animator>();
 	}
 
-	private void FixedUpdate()
+	private void Update()
 	{
-		//Move();
-		//Rotate();
-		if (controls.Player.Move.IsPressed() && Time.time >= nextMoveTime)
+		if (animator.GetCurrentAnimatorStateInfo(0).IsName("Jump") && !animator.IsInTransition(0))
 		{
-			Move();
-			Rotate();
-			nextMoveTime = Time.time + 1f / moveSpeed;
+			animator.speed = moveSpeed;
 		}
+		else
+		{
+			animator.speed = 1f;
+		}
+		Move();
 	}
 
 	private void Move()
 	{
-		animator.speed = moveSpeed * 2;
-		animator.SetTrigger("Jump");
-		Vector3 moveDirection = new Vector3(movementInput.x, 0f, movementInput.y);
-		//transform.Translate(moveDirection * moveSpeed * Time.deltaTime, Space.World);
-		transform.Translate(moveDirection * moveSpeed, Space.World);
-
-		if (!animator.GetCurrentAnimatorStateInfo(0).IsName("Jump") && !animator.IsInTransition(0))
+		if (controls.Player.Move.IsPressed() && Time.time >= nextMoveTime)
 		{
-			animator.speed = 1f;
-			animator.SetTrigger("Idle");
+			if (!animator.GetCurrentAnimatorStateInfo(0).IsName("Jump") && !animator.IsInTransition(0))
+			{
+				//animator.SetBool("JumpBool", true);
+				StartCoroutine(JumpAndWait());
+			}
+			Vector3 moveDirection = new Vector3(movementInput.x, 0f, movementInput.y);
+			transform.Translate(moveDirection * moveSpeed, Space.World);
+			Rotate();
+			nextMoveTime = Time.time + 1.25f / moveSpeed;
+		}
+	}
+
+	private IEnumerator JumpAndWait()
+	{
+		animator.SetBool("JumpBool", true);
+
+		// Wait until the jump animation starts playing
+		while (!animator.GetCurrentAnimatorStateInfo(0).IsName("Jump"))
+		{
+			yield return null;
+		}
+
+		// Wait for the jump animation to complete
+		yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length / moveSpeed / 2);
+
+		// Check if the player is still moving
+		if (!controls.Player.Move.IsPressed())
+		{
+			// If not, transition back to the Idle state
+			animator.SetBool("JumpBool", false);
+		}
+		else
+		{
+			// If the player is still moving, wait for the movement to stop
+			while (controls.Player.Move.IsPressed())
+			{
+				yield return null;
+			}
+
+			// Transition back to the Idle state
+			animator.SetBool("JumpBool", false);
 		}
 	}
 
