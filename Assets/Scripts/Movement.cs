@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 public class Movement : MonoBehaviour
 {
@@ -7,8 +6,9 @@ public class Movement : MonoBehaviour
 	public AudioSource jumpSound;
 	public AudioSource deathSound;
 
-	public float moveSpeed = 1f;
+	private CollisionManager collisionManager;
 
+	public float moveSpeed = 1f;
 
 	private FrogActions controls;
 	private Vector2 movementInput;
@@ -28,7 +28,9 @@ public class Movement : MonoBehaviour
 		AudioSource[] audioSources = GetComponents<AudioSource>();
 		jumpSound = audioSources[0];
 		deathSound = audioSources[1];
+
 		animator = GetComponent<Animator>();
+		collisionManager = GetComponent<CollisionManager>();
 	}
 
 
@@ -59,14 +61,24 @@ public class Movement : MonoBehaviour
 				if (!animator.GetCurrentAnimatorStateInfo(0).IsName("Jump") && !animator.IsInTransition(0))
 				{
 					Vector3 moveDirection = new Vector3(movementInput.x, 0f, movementInput.y);
-					transform.Translate(moveDirection * moveSpeed, Space.World);
+					RaycastHit hit;
+					Physics.SphereCast(transform.position, 1.0f, moveDirection, out hit, moveSpeed);
+					if (hit.collider != null && hit.collider.tag == "Obstacle")
+					{
+
+					}
+					else
+					{
+						transform.Translate(moveDirection * moveSpeed, Space.World);
+						nextMoveTime = (Time.time + 1.25f) / 2 / moveSpeed; // 1.25f is the base animation
+					}
 					Rotate();
-					nextMoveTime = (Time.time + 1.25f) / 2 / moveSpeed; //1.25f is base animation 
+					//Vector3 moveDirection = new Vector3(movementInput.x, 0f, movementInput.y);
+					//transform.Translate(moveDirection * moveSpeed, Space.World);
+					//Rotate();
+					//nextMoveTime = (Time.time + 1.25f) / 2 / moveSpeed; //1.25f is base animation 
 				}
-				else
-				{
-					Debug.Log("Timming of movement and animation is off"); //For dev purposes
-				}
+				else Debug.Log("Timming of movement and animation is off"); //For dev purposes
 			}
 		}
 	}
@@ -77,7 +89,6 @@ public class Movement : MonoBehaviour
 	private IEnumerator JumpAndWait()
 	{
 		animator.SetBool("JumpBool", true);
-		// Wait until the jump animation starts playing
 		while (!animator.GetCurrentAnimatorStateInfo(0).IsName("Jump"))
 		{
 			yield return null;
@@ -96,13 +107,8 @@ public class Movement : MonoBehaviour
 	{
 		if (movementInput != Vector2.zero)
 		{
-			// Calculate the angle based on the movement input
 			float targetAngle = Mathf.Atan2(movementInput.x, movementInput.y) * Mathf.Rad2Deg;
-
-			// Create a rotation only around the Y-axis
 			Quaternion toRotation = Quaternion.Euler(0f, targetAngle, 0f);
-
-			// Snap the rotation directly
 			transform.rotation = toRotation;
 		}
 	}
