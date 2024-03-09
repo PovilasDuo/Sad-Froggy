@@ -6,13 +6,13 @@ public class Movement : MonoBehaviour
 	public AudioSource jumpSound;
 	public AudioSource deathSound;
 
-	private CollisionManager collisionManager;
-
 	public float moveSpeed = 1f;
+	public float moveDistance = 5f;
 
 	private FrogActions controls;
 	private Vector2 movementInput;
 	private float nextMoveTime = 0f;
+
 	private void Awake()
 	{
 		controls = new FrogActions();
@@ -30,7 +30,6 @@ public class Movement : MonoBehaviour
 		deathSound = audioSources[1];
 
 		animator = GetComponent<Animator>();
-		collisionManager = GetComponent<CollisionManager>();
 	}
 
 
@@ -62,15 +61,20 @@ public class Movement : MonoBehaviour
 				{
 					Vector3 moveDirection = new Vector3(movementInput.x, 0f, movementInput.y);
 					RaycastHit hit;
-					Physics.SphereCast(transform.position, 1.0f, moveDirection, out hit, moveSpeed);
+					Physics.SphereCast(transform.position, 1.0f, moveDirection, out hit, moveDistance);
 					if (hit.collider != null && hit.collider.tag == "Obstacle")
 					{
 
 					}
 					else
 					{
-						transform.Translate(moveDirection * moveSpeed, Space.World);
-						nextMoveTime = (Time.time + 1.25f) / 2 / moveSpeed; // 1.25f is the base animation
+
+						Vector3 targetPosition = transform.position + moveDirection * moveDistance;
+						nextMoveTime = (Time.time + 1.25f) / 2 / moveSpeed;
+						transform.position = Vector3.Lerp(transform.position, targetPosition, 1f);
+
+						//transform.Translate(moveDirection * moveSpeed, Space.World);
+						//nextMoveTime = (Time.time + 1.25f) / 2 / moveSpeed; // 1.25f is the base animation
 					}
 					Rotate();
 					//Vector3 moveDirection = new Vector3(movementInput.x, 0f, movementInput.y);

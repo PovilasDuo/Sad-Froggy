@@ -13,14 +13,15 @@ public class TilemapManager : MonoBehaviour
     public GameObject roadTile;
     public GameObject riverTile;
     public GameObject grassTile;
-    public GameObject mushroom;
+    public GameObject tadpole;
     public GameObject rock;
+    public GameObject key;
 
     [Header("Obstacle counts")]
     public int roadCount = 2;
     public int riverCount = 2;
     public int rockCount = 5;
-    public int mushroomCount = 7;
+    public int tadpoleCount = 7;
 
     private bool[] occupiedRows;
     private bool[][] occupiedTiles;
@@ -28,30 +29,70 @@ public class TilemapManager : MonoBehaviour
     void Start()
     {
         tilemap = GetComponent<Tilemap>();
-        occupiedRows = new bool[tilesNumberZ];
-        occupiedTiles = new bool[tilesNumberX][];
-        for (int i = 0; i < tilesNumberX; i++)
-        {
-            occupiedTiles[i] = new bool[tilesNumberZ];
-        }
-
-        SetTilemapSize();
-        SetTilemapPosition();
-
-        CreateLinearObstacles(roadTile, roadCount);
-        CreateLinearObstacles(riverTile, riverCount);
-        CreateObstacles(mushroom, mushroomCount);
-        CreateObstacles(rock, rockCount);
-
-        CreateBase();
     }
 
-    /// <summary>
-    /// sets prefered tilemap size
-    /// </summary>
-    private void SetTilemapSize()
+	/// <summary>
+	/// Generates a map of default size
+	/// </summary>
+	public void GenerateMap()
     {
-        tilemap.size = new Vector3Int(tilesNumberX, 1, tilesNumberZ);
+		occupiedRows = new bool[tilesNumberZ];
+		occupiedTiles = new bool[tilesNumberX][];
+		for (int i = 0; i < tilesNumberX; i++)
+		{
+			occupiedTiles[i] = new bool[tilesNumberZ];
+		}
+
+		SetTilemapSize(tilesNumberX, tilesNumberZ);
+		SetTilemapPosition();
+
+		CreateLinearObstacles(roadTile, roadCount);
+		CreateLinearObstacles(riverTile, riverCount);
+		CreateObstacles(tadpole, tadpoleCount);
+		CreateObstacles(rock, rockCount);
+        SpawnKeyRandom();
+
+		CreateBase();
+	}
+
+	/// <summary>
+	/// Generates a map of desired size
+	/// </summary>
+	/// <param name="sizeX">Tiles Number X</param>
+	/// <param name="sizeZ">Tiles Number Z</param>
+	/// <param name="roadCount">Number of roads</param>
+	/// <param name="riverCount">Number of rivers</param>
+	/// <param name="rockCount">Number of rocks</param>
+	/// <param name="tadpoleCount">Number of tadpoles</param>
+	public void GenerateMap(int sizeX, int sizeZ, int roadCount, int riverCount, int rockCount, int tadpoleCount)
+	{
+		occupiedRows = new bool[sizeZ];
+		occupiedTiles = new bool[sizeX][];
+		for (int i = 0; i < sizeX; i++)
+		{
+			occupiedTiles[i] = new bool[sizeZ];
+		}
+
+		SetTilemapSize(sizeX, sizeZ);
+		SetTilemapPosition();
+
+		CreateLinearObstacles(roadTile, roadCount);
+		CreateLinearObstacles(riverTile, riverCount);
+		CreateObstacles(tadpole, tadpoleCount);
+		CreateObstacles(rock, rockCount);
+        SpawnKeyRandom();
+
+		CreateBase();
+	}
+
+	/// <summary>
+	/// sets prefered tilemap size
+	/// </summary>
+    /// <param name="sizeX">Tiles Number X</param>
+	/// <param name="sizeZ">Tiles Number Z</param>
+	private void SetTilemapSize(int sizeX, int sizeZ)
+    {
+        tilemap.size = new Vector3Int(sizeX, 1, sizeZ);
         tilemap.tileAnchor = new Vector3(0f, 0f, 0f);
     }
 
@@ -80,7 +121,9 @@ public class TilemapManager : MonoBehaviour
             for (int x = 0; x < tilesNumberX; x++)
             {
                 Vector3 worldPos = tilemapOrigin + new Vector3(x * tileSize, 0, obstaclePosition * tileSize);
-                Instantiate(obstacle, worldPos, Quaternion.identity);
+
+                GameObject go = Instantiate(obstacle, worldPos, Quaternion.identity);
+                go.transform.SetParent(this.transform, true);
             }
         }
     }
@@ -100,8 +143,10 @@ public class TilemapManager : MonoBehaviour
             occupiedTiles[(int)obstaclePosition.x][(int)obstaclePosition.z] = true;
 
             Vector3 worldPos = tilemapOrigin + new Vector3(obstaclePosition.x * tileSize, obstacle.GetComponent<Renderer>().bounds.size.y/2, obstaclePosition.z * tileSize);
-            Instantiate(obstacle, worldPos, Quaternion.identity);
-        }
+
+			GameObject go = Instantiate(obstacle, worldPos, Quaternion.identity);
+			go.transform.SetParent(this.transform, true);
+		}
     }
 
     /// <summary>
@@ -118,8 +163,10 @@ public class TilemapManager : MonoBehaviour
                 for (int x = 0; x < tilesNumberX; x++)
                 {
                     Vector3 worldPos = tilemapOrigin + new Vector3(x * tileSize, 0, z * tileSize);
-                    Instantiate(grassTile, worldPos, Quaternion.identity);
-                }
+
+					GameObject go = Instantiate(grassTile, worldPos, Quaternion.identity);
+					go.transform.SetParent(this.transform, true);
+				}
             }
         }
     }
@@ -155,4 +202,19 @@ public class TilemapManager : MonoBehaviour
 
         return new Vector3(cellX, 0, cellZ);
     }
+
+    /// <summary>
+    /// Spawns a key in a random position
+    /// </summary>
+    public void SpawnKeyRandom()
+    {
+		Vector3 tilemapOrigin = tilemap.transform.position;
+		Vector3 obstaclePosition = GetRandomCell();
+		occupiedTiles[(int)obstaclePosition.x][(int)obstaclePosition.z] = true;
+
+		Vector3 worldPos = tilemapOrigin + new Vector3(obstaclePosition.x * tileSize, key.GetComponent<Renderer>().bounds.size.y / 2, obstaclePosition.z * tileSize);
+
+		GameObject go = Instantiate(key, worldPos, Quaternion.identity);
+		go.transform.SetParent(this.transform, true);
+	}
 }

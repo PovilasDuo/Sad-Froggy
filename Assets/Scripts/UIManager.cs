@@ -4,23 +4,40 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
-    public TextMeshProUGUI text;
+	private GameManager gameManagerInstance;
+
+	public TextMeshProUGUI keyText;
+	public TextMeshProUGUI scoreText;
     public int score;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+
     void Start()
     {
 		score = 0;
 	}
 
-    // Update is called once per frame
+
     void Update()
     {
         
     }
 
-    public void IncreasePoints(int amount)
+	/// <summary>
+	/// Increases the game score by the desired amount
+	/// </summary>
+	/// <param name="amount">The desired amount</param>
+	public void IncreasePoints(int amount)
     {
         score += amount;
-		text.text = score.ToString();
-    }
+		scoreText.text = score.ToString();
+		GameObject.Find("GameManager").GetComponent<GameManager>().tadPoleCount--;
+
+	}
+
+	public void KeyTextAppear()
+	{
+		keyText.gameObject.SetActive(true);
+	}
+
+	///TO DO
+	public void DecreasePoints(int amount) { }
 }

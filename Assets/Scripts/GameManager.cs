@@ -2,16 +2,22 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    public GameObject tileMapGO;
+    public GameObject UIManagerGO;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    private TilemapManager tilemapManagerInstance;
+    private UIManager uIManagerInstance;
+
+    public float tadPoleCount;
+
     void Start()
     {
-        
-    }
+		tileMapGO = GameObject.Find("TilemapManager");
+        UIManagerGO = GameObject.Find("UIManager");
+		tilemapManagerInstance = tileMapGO.GetComponent<TilemapManager>();
+		uIManagerInstance = UIManagerGO.GetComponent<UIManager>();
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+        tilemapManagerInstance.GenerateMap();
+		tadPoleCount = tilemapManagerInstance.tadpoleCount;
+	}
 }

@@ -137,7 +137,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4461413942586865547}
   - component: {fileID: 7949426586347876507}
-  - component: {fileID: 3155854272774177632}
+  - component: {fileID: 1431240237637324118}
   m_Layer: 0
   m_Name: Roundcube
   m_TagString: Untagged
@@ -220,8 +220,8 @@ SkinnedMeshRenderer:
     m_Center: {x: 0.0001576133, y: 0.0065390123, z: 0.00068778195}
     m_Extent: {x: 0.0087997485, y: 0.0076255435, z: 0.0070880065}
   m_DirtyAABB: 0
---- !u!64 &3155854272774177632
-MeshCollider:
+--- !u!65 &1431240237637324118
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -238,10 +238,9 @@ MeshCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 7398509403596113055, guid: 06b0f803859d50041846222b88ecb887, type: 3}
+  serializedVersion: 3
+  m_Size: {x: 0.025, y: 0.025, z: 0.025}
+  m_Center: {x: 0, y: 0, z: 0.0125}
 --- !u!1 &4276288867426848896
 GameObject:
   m_ObjectHideFlags: 0
@@ -321,7 +320,6 @@ GameObject:
   - component: {fileID: 2095531475352422000}
   - component: {fileID: 7542927340445538226}
   - component: {fileID: 1040297622237105431}
-  - component: {fileID: 8964512249045723996}
   m_Layer: 0
   m_Name: Froggy
   m_TagString: Untagged
@@ -442,6 +440,7 @@ MonoBehaviour:
   jumpSound: {fileID: 7542927340445538226}
   deathSound: {fileID: 1040297622237105431}
   moveSpeed: 10
+  moveDistance: 5
 --- !u!82 &7542927340445538226
 AudioSource:
   m_ObjectHideFlags: 0
@@ -636,25 +635,3 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!64 &8964512249045723996
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7576830005294131790}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 0}
