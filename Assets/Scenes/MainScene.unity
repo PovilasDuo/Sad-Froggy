@@ -558,6 +558,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   keyText: {fileID: 1054746847}
   scoreText: {fileID: 1088839085}
+  pauseButton: {fileID: 1253501213}
   score: 0
   pausePanel: {fileID: 933235346}
 --- !u!1 &330585543
@@ -2068,7 +2069,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 928801085}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 203252905}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: BackToMainMenu
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &928801085
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,9 +1,7 @@
-using UnityEngine;
 using TMPro;
-using UnityEngine.UI;
+using UnityEngine;
 using UnityEngine.SceneManagement;
-using System.Collections;
-using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
@@ -12,28 +10,28 @@ public class UIManager : MonoBehaviour
 	public TextMeshProUGUI keyText;
 	public TextMeshProUGUI scoreText;
 	public Button pauseButton;
-    public int score;
+	public int score;
 
 	public GameObject pausePanel;
 
-    void Start()
-    {
+	void Start()
+	{
 		score = 0;
 	}
 
 
-    void Update()
-    {
-        
-    }
+	void Update()
+	{
+
+	}
 
 	/// <summary>
 	/// Increases the game score by the desired amount
 	/// </summary>
 	/// <param name="amount">The desired amount</param>
 	public void IncreasePoints(int amount)
-    {
-        score += amount;
+	{
+		score += amount;
 		scoreText.text = score.ToString();
 		GameObject.Find("GameManager").GetComponent<GameManager>().tadPoleCount--;
 
@@ -48,23 +46,24 @@ public class UIManager : MonoBehaviour
 	public void DecreasePoints(int amount) { }
 
 
-		public void PauseGame()
+	public void PauseGame()
 	{
 		Time.timeScale = 0;
-			pausePanel.SetActive(true);
-			pauseButton.gameObject.SetActive(false);
+		pausePanel.SetActive(true);
+		pauseButton.gameObject.SetActive(false);
 	}
 
-		public void ResumeGame()
+	public void ResumeGame()
 	{
 		Time.timeScale = 1;
-			pausePanel.SetActive(false);
-			pauseButton.gameObject.SetActive(true);
+		pausePanel.SetActive(false);
+		pauseButton.gameObject.SetActive(true);
 	}
 
 
-		public void Restart()
+	public void Restart()
 	{
+		Time.timeScale = 1;
 		SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
 	}
 
