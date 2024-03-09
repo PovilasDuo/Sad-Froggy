@@ -1,6 +1,9 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+using System.Collections;
+using System.Collections.Generic;
 
 public class UIManager : MonoBehaviour
 {
@@ -9,6 +12,8 @@ public class UIManager : MonoBehaviour
 	public TextMeshProUGUI keyText;
 	public TextMeshProUGUI scoreText;
     public int score;
+
+	public GameObject pausePanel;
 
     void Start()
     {
@@ -40,4 +45,37 @@ public class UIManager : MonoBehaviour
 
 	///TO DO
 	public void DecreasePoints(int amount) { }
+
+
+		public void PauseGame()
+	{
+		Time.timeScale = 0;
+			pausePanel.SetActive(true);
+	}
+
+		public void ResumeGame()
+	{
+		Time.timeScale = 1;
+			pausePanel.SetActive(false);
+	}
+
+
+		public void Restart()
+	{
+		SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+	}
+
+	public void BackToMainMenu()
+	{
+		SceneManager.LoadScene("MenuScene");
+	}
+
+	public void ExitGame()
+	{
+#if UNITY_EDITOR
+		UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
+	}
 }
