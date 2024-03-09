@@ -11,6 +11,7 @@ public class UIManager : MonoBehaviour
 
 	public TextMeshProUGUI keyText;
 	public TextMeshProUGUI scoreText;
+	public Button pauseButton;
     public int score;
 
 	public GameObject pausePanel;
@@ -51,12 +52,14 @@ public class UIManager : MonoBehaviour
 	{
 		Time.timeScale = 0;
 			pausePanel.SetActive(true);
+			pauseButton.gameObject.SetActive(false);
 	}
 
 		public void ResumeGame()
 	{
 		Time.timeScale = 1;
 			pausePanel.SetActive(false);
+			pauseButton.gameObject.SetActive(true);
 	}
 
 
