@@ -62,11 +62,16 @@ public class Movement : MonoBehaviour
 				Vector3 moveDirection = new Vector3(movementInput.x, 0f, movementInput.y);
 				RaycastHit hit;
 				Physics.SphereCast(transform.position, 1.0f, moveDirection, out hit, moveDistance);
-				if (hit.collider != null && hit.collider.tag == "Obstacle")
+
+                if (hit.collider != null && hit.collider.tag == "Obstacle")
 				{
 
 				}
-				else
+                else if (hit.collider != null && hit.collider.tag == "NextLevelDoor" && !hasKey)
+                {
+
+                }
+                else
 				{
 					nextMoveTime = Time.time + (1.25f / 2 / moveSpeed);
 					transform.Translate(moveDirection * moveDistance, Space.World);
