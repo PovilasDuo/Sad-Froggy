@@ -35,7 +35,7 @@ public class Movement : MonoBehaviour
 
 	private void Update()
 	{
-		if (animator.GetCurrentAnimatorStateInfo(0).IsName("Jump") && !animator.IsInTransition(0))
+		if (animator.GetCurrentAnimatorStateInfo(0).IsName("Jump") || animator.IsInTransition(0))
 		{
 			animator.speed = moveSpeed; // Jump animation has to be according to the movement speed
 		}
@@ -57,32 +57,19 @@ public class Movement : MonoBehaviour
 			{
 				jumpSound.Play();
 				StartCoroutine(JumpAndWait());
-				if (!animator.GetCurrentAnimatorStateInfo(0).IsName("Jump") && !animator.IsInTransition(0))
+				Vector3 moveDirection = new Vector3(movementInput.x, 0f, movementInput.y);
+				RaycastHit hit;
+				Physics.SphereCast(transform.position, 1.0f, moveDirection, out hit, moveDistance);
+				if (hit.collider != null && hit.collider.tag == "Obstacle")
 				{
-					Vector3 moveDirection = new Vector3(movementInput.x, 0f, movementInput.y);
-					RaycastHit hit;
-					Physics.SphereCast(transform.position, 1.0f, moveDirection, out hit, moveDistance);
-					if (hit.collider != null && hit.collider.tag == "Obstacle")
-					{
 
-					}
-					else
-					{
-
-						Vector3 targetPosition = transform.position + moveDirection * moveDistance;
-						nextMoveTime = (Time.time + 1.25f) / 2 / moveSpeed;
-						transform.position = Vector3.Lerp(transform.position, targetPosition, 1f);
-
-						//transform.Translate(moveDirection * moveSpeed, Space.World);
-						//nextMoveTime = (Time.time + 1.25f) / 2 / moveSpeed; // 1.25f is the base animation
-					}
-					Rotate();
-					//Vector3 moveDirection = new Vector3(movementInput.x, 0f, movementInput.y);
-					//transform.Translate(moveDirection * moveSpeed, Space.World);
-					//Rotate();
-					//nextMoveTime = (Time.time + 1.25f) / 2 / moveSpeed; //1.25f is base animation 
 				}
-				else Debug.Log("Timming of movement and animation is off"); //For dev purposes
+				else
+				{
+					nextMoveTime = Time.time + (1.25f / 2 / moveSpeed);
+					transform.Translate(moveDirection * moveDistance, Space.World);
+				}
+				Rotate();
 			}
 		}
 	}
@@ -93,13 +80,8 @@ public class Movement : MonoBehaviour
 	private IEnumerator JumpAndWait()
 	{
 		animator.SetBool("JumpBool", true);
-		while (!animator.GetCurrentAnimatorStateInfo(0).IsName("Jump"))
-		{
-			yield return null;
-		}
-
-		// Wait for the jump animation to complete (only half of the animation is played)
-		yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length / 2 / moveSpeed);
+		//yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length / 2 / moveSpeed);
+		yield return null;
 		animator.SetBool("JumpBool", false);
 	}
 

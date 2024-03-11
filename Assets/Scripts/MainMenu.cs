@@ -41,7 +41,7 @@ public class MainMenu : MonoBehaviour
 		public void Back()
 	{
 		MainPanel.SetActive(true);
-		if (SettingsPanel.active)
+		if (SettingsPanel.activeSelf)
 		{
 			SettingsPanel.SetActive(false);
 		}
