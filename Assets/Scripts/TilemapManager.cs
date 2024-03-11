@@ -16,6 +16,7 @@ public class TilemapManager : MonoBehaviour
     public GameObject tadpole;
     public GameObject rock;
     public GameObject key;
+    public GameObject border;
 
     [Header("Obstacle counts")]
     public int roadCount = 2;
@@ -31,7 +32,7 @@ public class TilemapManager : MonoBehaviour
         tilemap = GetComponent<Tilemap>();
     }
 
-	/// <summary>
+    /// <summary>
 	/// Generates a map of default size
 	/// </summary>
 	public void GenerateMap()
@@ -53,9 +54,10 @@ public class TilemapManager : MonoBehaviour
         SpawnKeyRandom();
 
 		CreateBase();
-	}
+        CreateBorders();
+    }
 
-	/// <summary>
+    /// <summary>
 	/// Generates a map of desired size
 	/// </summary>
 	/// <param name="sizeX">Tiles Number X</param>
@@ -65,27 +67,28 @@ public class TilemapManager : MonoBehaviour
 	/// <param name="rockCount">Number of rocks</param>
 	/// <param name="tadpoleCount">Number of tadpoles</param>
 	public void GenerateMap(int sizeX, int sizeZ, int roadCount, int riverCount, int rockCount, int tadpoleCount)
-	{
-		occupiedRows = new bool[sizeZ];
-		occupiedTiles = new bool[sizeX][];
-		for (int i = 0; i < sizeX; i++)
-		{
-			occupiedTiles[i] = new bool[sizeZ];
-		}
+    {
+        occupiedRows = new bool[sizeZ];
+        occupiedTiles = new bool[sizeX][];
+        for (int i = 0; i < sizeX; i++)
+        {
+            occupiedTiles[i] = new bool[sizeZ];
+        }
 
-		SetTilemapSize(sizeX, sizeZ);
-		SetTilemapPosition();
+        SetTilemapSize(sizeX, sizeZ);
+        SetTilemapPosition();
 
-		CreateLinearObstacles(roadTile, roadCount);
-		CreateLinearObstacles(riverTile, riverCount);
-		CreateObstacles(tadpole, tadpoleCount);
-		CreateObstacles(rock, rockCount);
+        CreateLinearObstacles(roadTile, roadCount);
+        CreateLinearObstacles(riverTile, riverCount);
+        CreateObstacles(tadpole, tadpoleCount);
+        CreateObstacles(rock, rockCount);
         SpawnKeyRandom();
 
-		CreateBase();
-	}
+        CreateBase();
+        CreateBorders();
+    }
 
-	/// <summary>
+    /// <summary>
 	/// sets prefered tilemap size
 	/// </summary>
     /// <param name="sizeX">Tiles Number X</param>
@@ -101,7 +104,7 @@ public class TilemapManager : MonoBehaviour
     /// </summary>
     private void SetTilemapPosition()
     {
-        tilemap.transform.position = new Vector3(-tileSize * tilesNumberX / 2 + tileSize/2, 0, 0);
+        tilemap.transform.position = new Vector3(-tileSize * tilesNumberX / 2 + tileSize / 2, 0, 0);
     }
 
     /// <summary>
@@ -120,6 +123,7 @@ public class TilemapManager : MonoBehaviour
 
             for (int x = 0; x < tilesNumberX; x++)
             {
+                occupiedTiles[x][obstaclePosition] = true;
                 Vector3 worldPos = tilemapOrigin + new Vector3(x * tileSize, 0, obstaclePosition * tileSize);
 
                 GameObject go = Instantiate(obstacle, worldPos, Quaternion.identity);
@@ -142,11 +146,11 @@ public class TilemapManager : MonoBehaviour
             Vector3 obstaclePosition = GetRandomCell();
             occupiedTiles[(int)obstaclePosition.x][(int)obstaclePosition.z] = true;
 
-            Vector3 worldPos = tilemapOrigin + new Vector3(obstaclePosition.x * tileSize, obstacle.GetComponent<Renderer>().bounds.size.y/2, obstaclePosition.z * tileSize);
-
-			GameObject go = Instantiate(obstacle, worldPos, Quaternion.identity);
-			go.transform.SetParent(this.transform, true);
-		}
+            Vector3 worldPos = tilemapOrigin + new Vector3(obstaclePosition.x * tileSize, obstacle.GetComponent<Renderer>().bounds.size.y / 2, obstaclePosition.z * tileSize);
+            
+            GameObject go = Instantiate(obstacle, worldPos, Quaternion.identity);
+            go.transform.SetParent(this.transform, true);
+        }
     }
 
     /// <summary>
@@ -163,13 +167,67 @@ public class TilemapManager : MonoBehaviour
                 for (int x = 0; x < tilesNumberX; x++)
                 {
                     Vector3 worldPos = tilemapOrigin + new Vector3(x * tileSize, 0, z * tileSize);
-
-					GameObject go = Instantiate(grassTile, worldPos, Quaternion.identity);
-					go.transform.SetParent(this.transform, true);
-				}
+                    
+                    GameObject go = Instantiate(grassTile, worldPos, Quaternion.identity);
+                    go.transform.SetParent(this.transform, true);
+                }
             }
         }
     }
+
+    public void CreateBorders()
+    {
+        Vector3 tilemapOrigin = tilemap.transform.position;
+        Vector3Int mapSize = tilemap.size;
+
+        CreateTopBottomBorders(tilemapOrigin, mapSize);
+        CreateLeftRightBorders(tilemapOrigin, mapSize);
+    }
+
+    private void CreateTopBottomBorders(Vector3 tilemapOrigin, Vector3Int mapSize)
+    {
+        for (int x = 0; x <= mapSize.x + 1; x++)
+        {
+            Vector3 worldPos = new Vector3((x - 1) * tileSize, 0, -tileSize) + tilemapOrigin;
+            GameObject go = Instantiate(grassTile, worldPos, Quaternion.identity);
+            go.transform.SetParent(this.transform, true);
+
+            worldPos = new Vector3((x - 1) * tileSize, 0, mapSize.z * tileSize) + tilemapOrigin;
+            go = Instantiate(grassTile, worldPos, Quaternion.identity);
+            go.transform.SetParent(this.transform, true);
+
+            worldPos = new Vector3((x - 1) * tileSize, 0, -tileSize) + tilemapOrigin;
+            go = Instantiate(border, worldPos, Quaternion.identity);
+            go.transform.SetParent(this.transform, true);
+
+            worldPos = new Vector3((x - 1) * tileSize, 0, mapSize.z * tileSize) + tilemapOrigin;
+            go = Instantiate(border, worldPos, Quaternion.identity);
+            go.transform.SetParent(this.transform, true);
+        }
+    }
+
+    private void CreateLeftRightBorders(Vector3 tilemapOrigin, Vector3Int mapSize)
+    {
+        for (int z = 0; z < mapSize.z; z++)
+        {
+            Vector3 worldPos = new Vector3(-tileSize, 0, z * tileSize) + tilemapOrigin;
+            GameObject go = Instantiate(grassTile, worldPos, Quaternion.identity);
+            go.transform.SetParent(this.transform, true);
+
+            worldPos = new Vector3(mapSize.x * tileSize, 0, z * tileSize) + tilemapOrigin;
+            go = Instantiate(grassTile, worldPos, Quaternion.identity);
+            go.transform.SetParent(this.transform, true);
+
+            worldPos = new Vector3(-tileSize, 0, z * tileSize) + tilemapOrigin;
+            go = Instantiate(border, worldPos, Quaternion.identity);
+            go.transform.SetParent(this.transform, true);
+
+            worldPos = new Vector3(mapSize.x * tileSize, 0, z * tileSize) + tilemapOrigin;
+            go = Instantiate(border, worldPos, Quaternion.identity);
+            go.transform.SetParent(this.transform, true);
+        }
+    }
+
 
     /// <summary>
     /// returns row where no other obstacles exist
@@ -197,7 +255,7 @@ public class TilemapManager : MonoBehaviour
         do
         {
             cellX = Random.Range(0, tilesNumberX);
-            cellZ = Random.Range(1, tilesNumberX);
+            cellZ = Random.Range(1, tilesNumberZ);
         } while (occupiedTiles[cellX][cellZ]);
 
         return new Vector3(cellX, 0, cellZ);
@@ -208,13 +266,13 @@ public class TilemapManager : MonoBehaviour
     /// </summary>
     public void SpawnKeyRandom()
     {
-		Vector3 tilemapOrigin = tilemap.transform.position;
-		Vector3 obstaclePosition = GetRandomCell();
-		occupiedTiles[(int)obstaclePosition.x][(int)obstaclePosition.z] = true;
+        Vector3 tilemapOrigin = tilemap.transform.position;
+        Vector3 obstaclePosition = GetRandomCell();
+        occupiedTiles[(int)obstaclePosition.x][(int)obstaclePosition.z] = true;
 
-		Vector3 worldPos = tilemapOrigin + new Vector3(obstaclePosition.x * tileSize, key.GetComponent<Renderer>().bounds.size.y / 2, obstaclePosition.z * tileSize);
+        Vector3 worldPos = tilemapOrigin + new Vector3(obstaclePosition.x * tileSize, key.GetComponent<Renderer>().bounds.size.y / 2, obstaclePosition.z * tileSize);
 
-		GameObject go = Instantiate(key, worldPos, Quaternion.identity);
-		go.transform.SetParent(this.transform, true);
-	}
+        GameObject go = Instantiate(key, worldPos, Quaternion.identity);
+        go.transform.SetParent(this.transform, true);
+    }
 }
