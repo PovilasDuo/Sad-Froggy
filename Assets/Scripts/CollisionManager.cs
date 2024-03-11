@@ -40,10 +40,25 @@ public class CollisionManager : MonoBehaviour
 		{
 			if (collided.tag == "Key")
 			{
+				this.gameObject.GetComponent<Movement>().hasKey = true;
 				uIManagerInstance.KeyTextAppear();
 				Destroy(collided);
-			}
-			collisionTime = Time.time;
+            }
+            else if (collided.tag == "ExitDoor")
+            {
+                uIManagerInstance.BackToMainMenu();
+                Destroy(collided);
+            }
+            else if (collided.tag == "NextLevelDoor")
+            {
+				if (gameObject.GetComponent<Movement>().hasKey)
+				{
+					uIManagerInstance.Restart();
+					Destroy(collided);
+				}
+            }
+
+            collisionTime = Time.time;
 		}
 	}
 }

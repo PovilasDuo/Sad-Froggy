@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using static UnityEngine.UI.Image;
 
 public class TilemapManager : MonoBehaviour
 {
@@ -24,8 +25,16 @@ public class TilemapManager : MonoBehaviour
     public int rockCount = 5;
     public int tadpoleCount = 7;
 
+    [Header("Doors")]
+    public GameObject exitDoor;
+    public GameObject nextLevelDoor;
+
     private bool[] occupiedRows;
     private bool[][] occupiedTiles;
+
+    private int borderNumber = 0;
+    private int borderCount = 0;
+    private int exitGap, nextLevelGap;
 
     void Start()
     {
@@ -54,6 +63,8 @@ public class TilemapManager : MonoBehaviour
         SpawnKeyRandom();
 
 		CreateBase();
+
+        borderCount = (tilesNumberX + tilesNumberZ) * 2 + 2;
         CreateBorders();
     }
 
@@ -180,6 +191,7 @@ public class TilemapManager : MonoBehaviour
         Vector3 tilemapOrigin = tilemap.transform.position;
         Vector3Int mapSize = tilemap.size;
 
+        GetRandomGaps();
         CreateTopBottomBorders(tilemapOrigin, mapSize);
         CreateLeftRightBorders(tilemapOrigin, mapSize);
     }
@@ -188,43 +200,51 @@ public class TilemapManager : MonoBehaviour
     {
         for (int x = 0; x <= mapSize.x + 1; x++)
         {
-            Vector3 worldPos = new Vector3((x - 1) * tileSize, 0, -tileSize) + tilemapOrigin;
-            GameObject go = Instantiate(grassTile, worldPos, Quaternion.identity);
-            go.transform.SetParent(this.transform, true);
-
-            worldPos = new Vector3((x - 1) * tileSize, 0, mapSize.z * tileSize) + tilemapOrigin;
-            go = Instantiate(grassTile, worldPos, Quaternion.identity);
-            go.transform.SetParent(this.transform, true);
-
-            worldPos = new Vector3((x - 1) * tileSize, 0, -tileSize) + tilemapOrigin;
-            go = Instantiate(border, worldPos, Quaternion.identity);
-            go.transform.SetParent(this.transform, true);
-
-            worldPos = new Vector3((x - 1) * tileSize, 0, mapSize.z * tileSize) + tilemapOrigin;
-            go = Instantiate(border, worldPos, Quaternion.identity);
-            go.transform.SetParent(this.transform, true);
+            CreateBorderTile((x - 1) * tileSize, 0, -tileSize, tilemapOrigin);
+            CreateBorderTile((x - 1) * tileSize, 0, mapSize.z * tileSize, tilemapOrigin);
         }
+    }
+
+    private void CreateBorderTile(float x, float y, float z, Vector3 origin)
+    {
+        borderNumber++;
+        Vector3 worldPos = new Vector3(x, y, z) + origin;
+        GameObject go = Instantiate(grassTile, worldPos, Quaternion.identity);
+        go.transform.SetParent(this.transform, true);
+
+        if (borderNumber == exitGap)
+        {
+            worldPos.y += 3; // TODO remove when we have a model for door
+            go = Instantiate(exitDoor, worldPos, Quaternion.identity);
+        } 
+        else if (borderNumber == nextLevelGap)
+        {
+            worldPos.y += 3; // TODO remove when we have a model for door
+            go = Instantiate(nextLevelDoor, worldPos, Quaternion.identity);
+        }
+        else
+        {
+            go = Instantiate(border, worldPos, Quaternion.identity);
+        }
+        go.transform.SetParent(this.transform, true);
     }
 
     private void CreateLeftRightBorders(Vector3 tilemapOrigin, Vector3Int mapSize)
     {
         for (int z = 0; z < mapSize.z; z++)
         {
-            Vector3 worldPos = new Vector3(-tileSize, 0, z * tileSize) + tilemapOrigin;
-            GameObject go = Instantiate(grassTile, worldPos, Quaternion.identity);
-            go.transform.SetParent(this.transform, true);
+            CreateBorderTile(-tileSize, 0, z * tileSize, tilemapOrigin);
+            CreateBorderTile(mapSize.x * tileSize, 0, z * tileSize, tilemapOrigin);
+        }
+    }
 
-            worldPos = new Vector3(mapSize.x * tileSize, 0, z * tileSize) + tilemapOrigin;
-            go = Instantiate(grassTile, worldPos, Quaternion.identity);
-            go.transform.SetParent(this.transform, true);
-
-            worldPos = new Vector3(-tileSize, 0, z * tileSize) + tilemapOrigin;
-            go = Instantiate(border, worldPos, Quaternion.identity);
-            go.transform.SetParent(this.transform, true);
-
-            worldPos = new Vector3(mapSize.x * tileSize, 0, z * tileSize) + tilemapOrigin;
-            go = Instantiate(border, worldPos, Quaternion.identity);
-            go.transform.SetParent(this.transform, true);
+    private void GetRandomGaps()
+    {
+        exitGap = Random.Range(1, borderCount);
+        nextLevelGap = exitGap;
+        while (nextLevelGap == exitGap)
+        {
+            nextLevelGap = Random.Range(1, borderCount);
         }
     }
 
