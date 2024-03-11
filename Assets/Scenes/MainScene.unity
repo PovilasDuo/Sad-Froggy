@@ -3149,6 +3149,10 @@ MonoBehaviour:
   riverCount: 2
   rockCount: 5
   tadpoleCount: 7
+  exitDoor: {fileID: 2549014252930824701, guid: bdffe80b9ecf7594bb9579ca58f4da2c,
+    type: 3}
+  nextLevelDoor: {fileID: 1647000192266116057, guid: 3d3854f629dd7364194eb7a5d917941f,
+    type: 3}
 --- !u!1839735485 &1598683174
 Tilemap:
   m_ObjectHideFlags: 0

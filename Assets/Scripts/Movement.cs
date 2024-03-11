@@ -13,6 +13,8 @@ public class Movement : MonoBehaviour
 	private Vector2 movementInput;
 	private float nextMoveTime = 0f;
 
+	public bool hasKey;
+
 	private void Awake()
 	{
 		controls = new FrogActions();
@@ -61,12 +63,12 @@ public class Movement : MonoBehaviour
 				{
 					Vector3 moveDirection = new Vector3(movementInput.x, 0f, movementInput.y);
 					RaycastHit hit;
-					Physics.SphereCast(transform.position, 1.0f, moveDirection, out hit, moveDistance);
-					if (hit.collider != null && hit.collider.tag == "Obstacle")
-					{
+                    Physics.SphereCast(transform.position, 1.0f, moveDirection, out hit, moveDistance);
+                    if (hit.collider != null && hit.collider.tag == "Obstacle")
+                    {
 
-					}
-					else
+                    }
+                    else
 					{
 
 						Vector3 targetPosition = transform.position + moveDirection * moveDistance;
