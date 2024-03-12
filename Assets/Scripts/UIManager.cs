@@ -1,7 +1,9 @@
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using static System.Net.Mime.MediaTypeNames;
 
 public class UIManager : MonoBehaviour
 {
@@ -13,6 +15,7 @@ public class UIManager : MonoBehaviour
 	public int score;
 
 	public GameObject pausePanel;
+	public bool textAnimations = false;
 
 	void Start()
 	{
@@ -40,6 +43,7 @@ public class UIManager : MonoBehaviour
 	public void KeyTextAppear()
 	{
 		keyText.gameObject.SetActive(true);
+		PulseText(keyText);
 	}
 
 	///TO DO
@@ -79,5 +83,25 @@ public class UIManager : MonoBehaviour
 #else
         Application.Quit();
 #endif
+	}
+
+	public void PulseText(TMP_Text text)
+	{
+		textAnimations = true;
+		StartCoroutine(PulseAnimation(text));
+	}
+
+	private IEnumerator PulseAnimation(TMP_Text text)
+	{
+		while (textAnimations)
+		{
+			float lerpTime = Mathf.PingPong(Time.time, 1);
+			float newSize = Mathf.Lerp(0.9f, 1.2f, lerpTime);
+
+			// Set the text size
+			text.transform.localScale = new Vector3(newSize, newSize, 1);
+
+			yield return null;
+		}
 	}
 }
