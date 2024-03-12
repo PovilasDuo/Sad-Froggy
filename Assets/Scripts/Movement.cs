@@ -67,8 +67,8 @@ public class Movement : MonoBehaviour
 				{
 
 				}
-                else if (hit.collider != null && hit.collider.tag == "NextLevelDoor" && !hasKey)
-                {
+                else if (hit.collider != null && hit.collider.tag == "NextLevelDoor" && !hasKey || hit.collider != null && hit.collider.tag == "ExitLevelDoor" && !hasKey)
+				{
 
                 }
                 else

@@ -12,24 +12,6 @@ public class CollisionManager : MonoBehaviour
 	}
 
 	/// <summary>
-	/// Handles Game Object collision
-	/// </summary>
-	/// <param name="collision">Collision that occured</param>
-	private void OnCollisionEnter(Collision collision)
-	{
-		GameObject collided = collision.gameObject;
-		if (collisionTime != Time.time)
-		{
-			if (collided.tag == "Tadpole")
-			{
-				uIManagerInstance.IncreasePoints(1);
-				Destroy(collided);
-			}
-			collisionTime = Time.time;
-		}
-	}
-
-	/// <summary>
 	/// Hanldes trigger collisions
 	/// </summary>
 	/// <param name="other">The GameObject that this GameObject collided with</param>
@@ -44,21 +26,25 @@ public class CollisionManager : MonoBehaviour
 				uIManagerInstance.KeyTextAppear();
 				Destroy(collided);
             }
-            else if (collided.tag == "ExitDoor")
-            {
-                uIManagerInstance.BackToMainMenu();
-                Destroy(collided);
-            }
-            else if (collided.tag == "NextLevelDoor")
-            {
-				if (gameObject.GetComponent<Movement>().hasKey)
+			else if (gameObject.GetComponent<Movement>().hasKey)
+			{
+				if (collided.tag == "ExitDoor")
+				{
+					uIManagerInstance.BackToMainMenu();
+					Destroy(collided);
+				}
+				else if (collided.tag == "NextLevelDoor")
 				{
 					uIManagerInstance.Restart();
 					Destroy(collided);
 				}
-            }
-
-            collisionTime = Time.time;
+			}
+			else if (collided.tag == "Tadpole")
+			{
+				uIManagerInstance.IncreasePoints(1);
+				Destroy(collided);
+			}
+			collisionTime = Time.time;
 		}
 	}
 }
