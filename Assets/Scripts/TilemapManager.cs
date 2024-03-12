@@ -174,7 +174,7 @@ public class TilemapManager : MonoBehaviour
             Vector3 obstaclePosition = GetRandomCell();
             occupiedTiles[(int)obstaclePosition.x][(int)obstaclePosition.z] = true;
 
-            Vector3 worldPos = tilemapOrigin + new Vector3(obstaclePosition.x * tileSize, obstacle.GetComponent<Renderer>().bounds.size.y / 2, obstaclePosition.z * tileSize);
+            Vector3 worldPos = tilemapOrigin + new Vector3(obstaclePosition.x * tileSize, 2, obstaclePosition.z * tileSize);
 
             GameObject go = Instantiate(obstacle, worldPos, Quaternion.identity);
             go.transform.SetParent(this.transform, true);
