@@ -26,20 +26,25 @@ public class CollisionManager : MonoBehaviour
 				uIManagerInstance.KeyTextAppear();
 				Destroy(collided);
             }
-			else if (gameObject.GetComponent<Movement>().hasKey)
+			if (gameObject.GetComponent<Movement>().hasKey)
 			{
 				if (collided.tag == "ExitDoor")
 				{
 					uIManagerInstance.BackToMainMenu();
 					Destroy(collided);
+					this.gameObject.GetComponent<Movement>().hasKey = false;
+					uIManagerInstance.textAnimations = false;
 				}
 				else if (collided.tag == "NextLevelDoor")
 				{
-					uIManagerInstance.Restart();
+					//uIManagerInstance.Restart();
+					GameObject.Find("TilemapManager").GetComponent<TilemapManager>().GenerateMap(collided.transform.localPosition);
 					Destroy(collided);
+					this.gameObject.GetComponent<Movement>().hasKey = false;
+					uIManagerInstance.textAnimations = false;
 				}
 			}
-			else if (collided.tag == "Tadpole")
+			if (collided.tag == "Tadpole")
 			{
 				uIManagerInstance.IncreasePoints(1);
 				Destroy(collided);
