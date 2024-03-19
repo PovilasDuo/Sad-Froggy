@@ -23,17 +23,17 @@ public class CollisionManager : MonoBehaviour
 			if (collided.tag == "Key")
 			{
 				this.gameObject.GetComponent<Movement>().hasKey = true;
-				uIManagerInstance.KeyTextAppear();
+				uIManagerInstance.KeyTextAppear(true);
 				Destroy(collided);
             }
 			if (gameObject.GetComponent<Movement>().hasKey)
 			{
-				if (collided.tag == "ExitDoor")
+				if (collided.tag == "ExitLevelDoor")
 				{
 					uIManagerInstance.BackToMainMenu();
 					Destroy(collided);
 					this.gameObject.GetComponent<Movement>().hasKey = false;
-					uIManagerInstance.textAnimations = false;
+					uIManagerInstance.KeyTextAppear(false);
 				}
 				else if (collided.tag == "NextLevelDoor")
 				{
@@ -41,7 +41,7 @@ public class CollisionManager : MonoBehaviour
 					GameObject.Find("TilemapManager").GetComponent<TilemapManager>().GenerateMap(collided.transform.localPosition);
 					Destroy(collided);
 					this.gameObject.GetComponent<Movement>().hasKey = false;
-					uIManagerInstance.textAnimations = false;
+					uIManagerInstance.KeyTextAppear(false);
 				}
 			}
 			if (collided.tag == "Tadpole")

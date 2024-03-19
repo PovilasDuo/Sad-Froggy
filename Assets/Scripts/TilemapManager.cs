@@ -292,7 +292,7 @@ public class TilemapManager : MonoBehaviour
 		{
 			for (int x = -1; x <= mapSize.x; x++)
 			{
-				CreateBorderTile(x * tileSize, 0, mapSize.z * tileSize, tilemapOrigin); // Bottom border
+				CreateBorderTile(x * tileSize, 0, mapSize.z * tileSize, tilemapOrigin, Vector3.zero); // Bottom border
 			}
 		}
 
@@ -300,7 +300,7 @@ public class TilemapManager : MonoBehaviour
 		{
 			for (int z = mapSize.z; z >= 0; z--)
 			{
-				CreateBorderTile(mapSize.x * tileSize, 0, z * tileSize, tilemapOrigin); // Right border
+				CreateBorderTile(mapSize.x * tileSize, 0, z * tileSize, tilemapOrigin, new Vector3(0f, 90f, 0f)); // Right border
 			}
 		}
 
@@ -308,7 +308,7 @@ public class TilemapManager : MonoBehaviour
 		{
 			for (int x = mapSize.x; x >= -1; x--)
 			{
-				CreateBorderTile(x * tileSize, 0, -tileSize, tilemapOrigin); // Top border
+				CreateBorderTile(x * tileSize, 0, -tileSize, tilemapOrigin, Vector3.zero); // Top border
 			}
 		}
 
@@ -317,12 +317,12 @@ public class TilemapManager : MonoBehaviour
 		{
 			for (int z = 0; z <= mapSize.z; z++)
 			{
-				CreateBorderTile(-tileSize, 0, z * tileSize, tilemapOrigin); // Left border
+				CreateBorderTile(-tileSize, 0, z * tileSize, tilemapOrigin, new Vector3(0f, -90f, 0f)); // Left border
 			}
 		}
 	}
 
-	private void CreateBorderTile(float x, float y, float z, Vector3 origin)
+	private void CreateBorderTile(float x, float y, float z, Vector3 origin, Vector3 rotation)
 	{
 		borderNumber++;
 		Vector3 worldPos = new Vector3(x, y, z) + origin;
@@ -332,16 +332,16 @@ public class TilemapManager : MonoBehaviour
 		if (borderNumber == exitGap)
 		{
 			worldPos.y += 3; // TODO remove when we have a model for door
-			go = Instantiate(exitDoor, worldPos, Quaternion.identity);
+			go = Instantiate(exitDoor, worldPos, Quaternion.Euler(rotation));
 		}
 		else if (borderNumber == nextLevelGap)
 		{
 			worldPos.y += 3; // TODO remove when we have a model for door
-			go = Instantiate(nextLevelDoor, worldPos, Quaternion.identity);
+			go = Instantiate(nextLevelDoor, worldPos, Quaternion.Euler(rotation));
 		}
 		else
 		{
-			go = Instantiate(border, worldPos, Quaternion.identity);
+			go = Instantiate(border, worldPos, Quaternion.Euler(rotation));
 		}
 		go.transform.SetParent(levelGameobject.transform, false);
 	}

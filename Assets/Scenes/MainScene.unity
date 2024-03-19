@@ -561,7 +561,6 @@ MonoBehaviour:
   pauseButton: {fileID: 1253501213}
   score: 0
   pausePanel: {fileID: 933235346}
-  textAnimations: 0
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0
@@ -4124,7 +4123,7 @@ PrefabInstance:
     - target: {fileID: 2095531475352422000, guid: 042cf52f20b0ae54bbce9ccb0a809a87,
         type: 3}
       propertyPath: hasKey
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2095531475352422000, guid: 042cf52f20b0ae54bbce9ccb0a809a87,
         type: 3}

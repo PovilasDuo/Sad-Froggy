@@ -9,20 +9,18 @@ public class TadpoleMovement : MonoBehaviour
 	private float nextMoveInterval = 0;
 	private Vector3 moveDirection;
 
-	void Start()
-	{
-	}
-
-	// Update is called once per frame
 	void Update()
 	{
 		if (Time.time > nextMoveInterval)
 		{
 			MovemeRandomely();
-			setNextMoveTime();
+			nextMoveInterval = Time.time + Random.Range(minInterval, maxInterval);
 		}
 	}
 
+	/// <summary>
+	/// Moves randomely in a generated direction
+	/// </summary>
 	public void MovemeRandomely()
 	{
 		GenerateDirection();
@@ -30,6 +28,9 @@ public class TadpoleMovement : MonoBehaviour
 		RotateTowardsMovementDirection();
 	}
 
+	/// <summary>
+	/// Generates a direction to move towards to
+	/// </summary>
 	public void GenerateDirection()
 	{
 		moveDirection = new Vector3(Mathf.RoundToInt(Random.Range(-1f, 1f)), 0, Mathf.RoundToInt(Random.Range(-1f, 1f)));
@@ -37,18 +38,17 @@ public class TadpoleMovement : MonoBehaviour
 		RaycastHit hit;
 		Physics.SphereCast(transform.position, 1.0f, moveDirection, out hit, speed * Time.deltaTime);
 
-		if (hit.collider != null && hit.collider.tag == "Obstacle")
+		//If the tadpole would collide it generates a new direction to move to
+		if (hit.collider != null && (hit.collider.tag == "Obstacle" || hit.collider.tag == "NextLevelDoor" || hit.collider.tag == "ExitLevelDoor"))
 		{
 			moveDirection = new Vector3(Mathf.RoundToInt(Random.Range(-1f, 1f)), 0, Mathf.RoundToInt(Random.Range(-1f, 1f)));
 			GenerateDirection();
 		}
 	}
 
-	private void setNextMoveTime()
-	{
-		nextMoveInterval = Time.time + Random.Range(minInterval, maxInterval);
-	}
-
+	/// <summary>
+	/// Rotates the GameObject towards it's move direction 
+	/// </summary>
 	public void RotateTowardsMovementDirection()
 	{
 		float targetAngle = Mathf.Atan2(moveDirection.x, moveDirection.y) * Mathf.Rad2Deg;

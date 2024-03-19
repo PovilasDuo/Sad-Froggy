@@ -15,7 +15,7 @@ public class UIManager : MonoBehaviour
 	public int score;
 
 	public GameObject pausePanel;
-	public bool textAnimations = false;
+	private bool textAnimations = false;
 
 	void Start()
 	{
@@ -40,10 +40,10 @@ public class UIManager : MonoBehaviour
 
 	}
 
-	public void KeyTextAppear()
+	public void KeyTextAppear(bool enabled)
 	{
-		keyText.gameObject.SetActive(true);
-		PulseText(keyText);
+		keyText.gameObject.SetActive(enabled);
+		PulseText(keyText, enabled);
 	}
 
 	///TO DO
@@ -85,9 +85,9 @@ public class UIManager : MonoBehaviour
 #endif
 	}
 
-	public void PulseText(TMP_Text text)
+	public void PulseText(TMP_Text text, bool enabled)
 	{
-		textAnimations = true;
+		textAnimations = enabled;
 		StartCoroutine(PulseAnimation(text));
 	}
 

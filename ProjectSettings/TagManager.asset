@@ -7,8 +7,8 @@ TagManager:
   - Obstacle
   - Tadpole
   - Key
-  - ExitDoor
   - NextLevelDoor
+  - ExitLevelDoor
   layers:
   - Default
   - TransparentFX
