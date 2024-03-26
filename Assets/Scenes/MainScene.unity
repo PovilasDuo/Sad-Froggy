@@ -376,7 +376,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 2, y: 2, z: 2}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &159461372
 GameObject:
@@ -3016,6 +3016,8 @@ MonoBehaviour:
   nextLevelDoor: {fileID: 1647000192266116057, guid: 3d3854f629dd7364194eb7a5d917941f,
     type: 3}
   levelGameobject: {fileID: 0}
+  levelNr: 1
+  destroying: 0
 --- !u!1839735485 &1598683174
 Tilemap:
   m_ObjectHideFlags: 0
@@ -4120,15 +4122,20 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2095531475352422000, guid: 042cf52f20b0ae54bbce9ccb0a809a87,
+    - target: {fileID: 1431240237637324118, guid: 042cf52f20b0ae54bbce9ccb0a809a87,
         type: 3}
-      propertyPath: hasKey
+      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2095531475352422000, guid: 042cf52f20b0ae54bbce9ccb0a809a87,
         type: 3}
+      propertyPath: hasKey
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2095531475352422000, guid: 042cf52f20b0ae54bbce9ccb0a809a87,
+        type: 3}
       propertyPath: moveSpeed
-      value: 2
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 3564175874071990094, guid: 042cf52f20b0ae54bbce9ccb0a809a87,
         type: 3}

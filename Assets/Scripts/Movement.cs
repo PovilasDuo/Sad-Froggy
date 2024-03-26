@@ -15,14 +15,15 @@ public class Movement : MonoBehaviour
 
 	public bool hasKey;
 
+	//Sets variables necessary for the movement to perform correctly
 	private void Awake()
 	{
 		controls = new FrogActions();
 
-		controls.Player.Move.performed += ctx => movementInput = ctx.ReadValue<Vector2>();
-		controls.Player.Move.canceled += ctx => movementInput = Vector2.zero;
+		controls.Player.Move.performed += ctx => movementInput = ctx.ReadValue<Vector2>(); //Reads values on key press
+		controls.Player.Move.canceled += ctx => movementInput = Vector2.zero; //Sets the value to zero if it is released
 
-		controls.Player.Enable();
+		controls.Player.Enable(); //Enables the controls
 	}
 
 	private void Start()

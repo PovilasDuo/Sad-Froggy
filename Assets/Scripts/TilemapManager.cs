@@ -1,6 +1,10 @@
 using System.Collections;
+using System.Linq;
+using System.Text.RegularExpressions;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
+using UnityEngine.UIElements;
 
 public class TilemapManager : MonoBehaviour
 {
@@ -37,9 +41,9 @@ public class TilemapManager : MonoBehaviour
 	private int exitGap, nextLevelGap;
 
 	public GameObject levelGameobject;
-	private float levelNr = 1;
+	public float levelNr = 1;
 
-
+	public bool destroying = false;
 	private void Awake()
 	{
 		levelGameobject = new GameObject();
@@ -72,6 +76,10 @@ public class TilemapManager : MonoBehaviour
 		PrepareNextLevel();
 	}
 
+	/// <summary>
+	/// Generates a map based on the position
+	/// </summary>
+	/// <param name="position">The position that it takes into account</param>
 	public void GenerateMap(Vector3 position)
 	{
 		ClearOccupation();
@@ -86,39 +94,49 @@ public class TilemapManager : MonoBehaviour
 		SpawnKeyRandom();
 
 		CreateBase();
+		CheckBorders(position);
 
+		PrepareNextLevel();
+	}
+
+	public void CheckBorders(Vector3 position)
+	{
 		if ((position.x >= 0 && position.z >= 0) && (position.x > position.z))
 		{
-			Debug.Log(position.x + " and " + position.z);
-			Debug.Log("right");
+			//Debug.Log("right");
 			levelGameobject.transform.position = new Vector3(levelGameobject.transform.position.x + (tilesNumberX + 1) * tileSize, 0, levelGameobject.transform.position.z);
 			StartCoroutine(SmoothCameraMovement(new Vector3(Camera.main.transform.position.x + (tilesNumberX + 1) * tileSize * 1f, Camera.main.transform.position.y, Camera.main.transform.position.z), 3f));
 			CreateBorders(true, true, true, false);
 		}
 		else if (position.x < 0 && position.z >= 0)
 		{
-			Debug.Log("left");
+			//Debug.Log("left");
 			levelGameobject.transform.position = new Vector3(levelGameobject.transform.position.x - (tilesNumberX + 1) * tileSize, 0, levelGameobject.transform.position.z);
 			StartCoroutine(SmoothCameraMovement(new Vector3(Camera.main.transform.position.x - (tilesNumberX + 1) * tileSize * 1f, Camera.main.transform.position.y, Camera.main.transform.position.z), 3f));
 			CreateBorders(true, true, false, true);
 		}
 		else if (position.z >= 0 && position.z > position.x)
 		{
-			Debug.Log("top"); //neveikia
+			//Debug.Log("top");
 			levelGameobject.transform.position = new Vector3(levelGameobject.transform.position.x, 0, levelGameobject.transform.position.z + (tilesNumberZ + 1) * tileSize);
 			StartCoroutine(SmoothCameraMovement(new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, Camera.main.transform.position.z + (tilesNumberX + 1) * tileSize * 1f), 3f));
 			CreateBorders(true, false, true, true);
 		}
-		else// if (position.x <= 0 && position.z <= 0)
+		else
 		{
-			Debug.Log("bottom"); //neveikia
+			//Debug.Log("bottom");
 			levelGameobject.transform.position = new Vector3(levelGameobject.transform.position.x, 0, levelGameobject.transform.position.z - (tilesNumberZ + 1) * tileSize);
 			StartCoroutine(SmoothCameraMovement(new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, Camera.main.transform.position.z - (tilesNumberX + 1) * tileSize * 1f), 3f));
 			CreateBorders(false, true, true, true);
 		}
-		PrepareNextLevel();
 	}
 
+	/// <summary>
+	/// Enumerates camera positino to the targeted position
+	/// </summary>
+	/// <param name="targetPosition">The position the camera should be</param>
+	/// <param name="duration">Duration of the movement</param>
+	/// <returns>Waits for the next fram</returns>
 	IEnumerator SmoothCameraMovement(Vector3 targetPosition, float duration)
 	{
 		Vector3 startPosition = Camera.main.transform.position;
@@ -128,34 +146,14 @@ public class TilemapManager : MonoBehaviour
 		{
 			float t = (Time.time - startTime) / duration;
 			Camera.main.transform.position = Vector3.Lerp(startPosition, targetPosition, t);
-			yield return null; // Wait for the next frame
+			yield return null; // Waits for the next frame
 		}
-
-		// Ensure that the camera reaches the exact target position
 		Camera.main.transform.position = targetPosition;
 	}
 
-
-	public int CalculatePosition(Vector3 position)
-	{
-		if (levelNr == 1)
-		{
-			if (position.x >= 0 && position.z >= 0)
-			{
-				return (tilesNumberX + 2) * tileSize;
-			}
-			else if (position.x <= 0 && position.z >= 0)
-			{
-				return -(tilesNumberX + 2) * tileSize;
-			}
-			else if (position.z < 0)
-			{
-				return -(tilesNumberZ + 2) * tileSize;
-			}
-		}
-		return 0;
-	}
-
+	/// <summary>
+	/// Clears variables for the next level
+	/// </summary>
 	private void ClearOccupation()
 	{
 		occupiedRows = new bool[tilesNumberZ];
@@ -168,6 +166,9 @@ public class TilemapManager : MonoBehaviour
 		borderNumber = 0;
 	}
 
+	/// <summary>
+	/// Prepares levelGameojbect for the next level
+	/// </summary>
 	private void PrepareNextLevel()
 	{
 		Vector3 position = levelGameobject.transform.position;
@@ -175,6 +176,11 @@ public class TilemapManager : MonoBehaviour
 		levelGameobject = new GameObject();
 		levelGameobject.name = "Level " + levelNr.ToString();
 		levelGameobject.transform.position = position;
+
+		if (levelNr > 4)
+		{
+			Destroy(GameObject.Find("Level " + (levelNr - 5).ToString()));
+		}
 	}
 
 	/// <summary>
@@ -242,6 +248,11 @@ public class TilemapManager : MonoBehaviour
 		}
 	}
 
+	/// <summary>
+	/// Creates collectible gameobjects
+	/// </summary>
+	/// <param name="obstacle">Collectible gameobject</param>
+	/// <param name="obstacleCount">How many of them are there</param>
 	public void CreateCollectibles(GameObject obstacle, int obstacleCount)
 	{
 		Vector3 tilemapOrigin = tilemap.transform.position;
@@ -280,6 +291,13 @@ public class TilemapManager : MonoBehaviour
 		}
 	}
 
+	/// <summary>
+	/// Creates borders for the level
+	/// </summary>
+	/// <param name="top">If TOP the border should be created</param>
+	/// <param name="bottom">If BOTTOM the border should be created</param>
+	/// <param name="right">If RIGHT the border should be created</param>
+	/// <param name="left">If LEFT the border should be created</param>
 	public void CreateBorders(bool top, bool bottom, bool right, bool left)
 	{
 		Vector3 tilemapOrigin = tilemap.transform.position;
@@ -295,7 +313,6 @@ public class TilemapManager : MonoBehaviour
 				CreateBorderTile(x * tileSize, 0, mapSize.z * tileSize, tilemapOrigin, Vector3.zero); // Bottom border
 			}
 		}
-
 		if (right)
 		{
 			for (int z = mapSize.z; z >= 0; z--)
@@ -303,7 +320,6 @@ public class TilemapManager : MonoBehaviour
 				CreateBorderTile(mapSize.x * tileSize, 0, z * tileSize, tilemapOrigin, new Vector3(0f, 90f, 0f)); // Right border
 			}
 		}
-
 		if (bottom)
 		{
 			for (int x = mapSize.x; x >= -1; x--)
@@ -311,8 +327,6 @@ public class TilemapManager : MonoBehaviour
 				CreateBorderTile(x * tileSize, 0, -tileSize, tilemapOrigin, Vector3.zero); // Top border
 			}
 		}
-
-
 		if (left)
 		{
 			for (int z = 0; z <= mapSize.z; z++)
@@ -322,12 +336,32 @@ public class TilemapManager : MonoBehaviour
 		}
 	}
 
+	/// <summary>
+	/// Creates a border tile for the borders. Including the doors
+	/// </summary>
+	/// <param name="x">X coordinate</param>
+	/// <param name="y">>Y coordinate</param>
+	/// <param name="z">Z coordinate</param>
+	/// <param name="origin">Origin position</param>
+	/// <param name="rotation">Rotation in which to rotate the border or door</param>
 	private void CreateBorderTile(float x, float y, float z, Vector3 origin, Vector3 rotation)
 	{
 		borderNumber++;
 		Vector3 worldPos = new Vector3(x, y, z) + origin;
 		GameObject go = Instantiate(grassTile, worldPos, Quaternion.identity);
 		go.transform.SetParent(levelGameobject.transform, false);
+
+		Vector3 localPos = go.transform.localPosition;
+		Vector3 worldPosForRaycast = go.transform.parent.TransformPoint(localPos);
+
+		RaycastHit hit;
+		if (Physics.SphereCast(worldPosForRaycast, 3.0f, Vector3.up, out hit, 3f) ||
+			Physics.SphereCast(worldPosForRaycast, 3.0f, Vector3.down, out hit, 3f))
+		{
+			Debug.Log("Parent object: " + hit.collider.name );
+			Destroy(hit.collider.transform.parent.gameObject);
+
+		}
 
 		if (borderNumber == exitGap)
 		{
@@ -346,33 +380,17 @@ public class TilemapManager : MonoBehaviour
 		go.transform.SetParent(levelGameobject.transform, false);
 	}
 
-
+	/// <summary>
+	/// Searches and creates exits
+	/// </summary>
+	/// <param name="top">If TOP the border should be created</param>
+	/// <param name="bottom">If BOTTOM the border should be created</param>
+	/// <param name="right">If RIGHT the border should be created</param>
+	/// <param name="left">If LEFT the border should be created</param>
 	private void GetRandomGaps(bool top, bool bottom, bool right, bool left)
 	{
 		int randomN = (int)Mathf.Round(Random.Range(1f, 8f));
 		int addative = 2;
-		//if (!top)
-		//{
-		//	randomN = (int)Mathf.Round(Random.Range(3f, 6f));
-		//	addative = 2;
-		//}
-		//else if (!bottom)
-		//{
-		//	if (Random.value < 0.5f) randomN = (int)Mathf.Round(Random.Range(1f, 2f));
-		//	else randomN = (int)Mathf.Round(Random.Range(7f, 8f));
-		//	addative = 2;
-		//}
-		//else if (!right)
-		//{
-		//	randomN = (int)Mathf.Round(Random.Range(5f, 8f));
-		//	addative = 2;
-		//}
-		//else if (!left)
-		//{
-		//	randomN = (int)Mathf.Round(Random.Range(1f, 4f));
-		//	addative = 2;
-		//}
-
 
 		if (!top || !bottom || !right || !left)
 		{
@@ -380,6 +398,7 @@ public class TilemapManager : MonoBehaviour
 			addative = 2;
 		}
 
+		///Diferent sets of multiplications for different sizes of levels
 		float[] multiplactionOdd = new float[] { 3.5f, 6f, 8f };
 		float[] multiplcationNOdd = new float[] { 3.5f, 5.5f, 7.5f };
 		float[] multiplcationEven = new float[] { 3f, 5f, 6.5f };
@@ -429,7 +448,7 @@ public class TilemapManager : MonoBehaviour
 			exitGap = Mathf.CeilToInt((tilesNumberX + addative) / 2 * multiplication[2]);
 			nextLevelGap = Mathf.CeilToInt((tilesNumberX + addative) / 2f);
 		}
-		Debug.Log("random: " + randomN + "; " + "exitGap: " + exitGap + " nextLevelGap: " + nextLevelGap + " addative:" + addative);
+		//Debug.Log("random: " + randomN + "; " + "exitGap: " + exitGap + " nextLevelGap: " + nextLevelGap + " addative:" + addative); ////For debugging exits
 	}
 
 

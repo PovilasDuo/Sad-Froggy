@@ -22,12 +22,6 @@ public class UIManager : MonoBehaviour
 		score = 0;
 	}
 
-
-	void Update()
-	{
-
-	}
-
 	/// <summary>
 	/// Increases the game score by the desired amount
 	/// </summary>
@@ -37,19 +31,21 @@ public class UIManager : MonoBehaviour
 		score += amount;
 		scoreText.text = score.ToString();
 		GameObject.Find("GameManager").GetComponent<GameManager>().tadPoleCount--;
-
 	}
 
+	/// <summary>
+	/// Makes the key text appear or disappear with an animation
+	/// </summary>
+	/// <param name="enabled">Enables or dissables the text</param>
 	public void KeyTextAppear(bool enabled)
 	{
 		keyText.gameObject.SetActive(enabled);
 		PulseText(keyText, enabled);
 	}
 
-	///TO DO
-	public void DecreasePoints(int amount) { }
-
-
+	/// <summary>
+	/// Pauses the game
+	/// </summary>
 	public void PauseGame()
 	{
 		Time.timeScale = 0;
@@ -57,6 +53,9 @@ public class UIManager : MonoBehaviour
 		pauseButton.gameObject.SetActive(false);
 	}
 
+	/// <summary>
+	/// Resumes the game
+	/// </summary>
 	public void ResumeGame()
 	{
 		Time.timeScale = 1;
@@ -64,18 +63,26 @@ public class UIManager : MonoBehaviour
 		pauseButton.gameObject.SetActive(true);
 	}
 
-
+	/// <summary>
+	/// Restarts the level
+	/// </summary>
 	public void Restart()
 	{
 		Time.timeScale = 1;
 		SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
 	}
 
+	/// <summary>
+	/// Switches the scene to MainMenu scene
+	/// </summary>
 	public void BackToMainMenu()
 	{
 		SceneManager.LoadScene("MenuScene");
 	}
 
+	/// <summary>
+	/// Exits the game
+	/// </summary>
 	public void ExitGame()
 	{
 #if UNITY_EDITOR
@@ -85,12 +92,22 @@ public class UIManager : MonoBehaviour
 #endif
 	}
 
+	/// <summary>
+	/// Makes a text appear in a pulse like animation
+	/// </summary>
+	/// <param name="text">Text to appear</param>
+	/// <param name="enabled">Sets the bool variable</param>
 	public void PulseText(TMP_Text text, bool enabled)
 	{
 		textAnimations = enabled;
 		StartCoroutine(PulseAnimation(text));
 	}
 
+	/// <summary>
+	/// Makes a text appear in a pulse like animation
+	/// </summary>
+	/// <param name="text">Text to appear</param>
+	/// <returns>Smooth animation after a period</returns>
 	private IEnumerator PulseAnimation(TMP_Text text)
 	{
 		while (textAnimations)
