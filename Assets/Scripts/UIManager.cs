@@ -3,7 +3,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using static System.Net.Mime.MediaTypeNames;
 
 public class UIManager : MonoBehaviour
 {
@@ -11,10 +10,12 @@ public class UIManager : MonoBehaviour
 
 	public TextMeshProUGUI keyText;
 	public TextMeshProUGUI scoreText;
-	public Button pauseButton;
+    public TextMeshProUGUI finalScoreText;
+    public Button pauseButton;
 	public int score;
 
 	public GameObject pausePanel;
+	public GameObject gameOverPanel;
 	private bool textAnimations = false;
 
 	void Start()
@@ -102,6 +103,14 @@ public class UIManager : MonoBehaviour
 		textAnimations = enabled;
 		StartCoroutine(PulseAnimation(text));
 	}
+
+	public void ShowGameOver()
+    {
+        Time.timeScale = 0;
+		finalScoreText.text = "Collected tadpoles: " + scoreText.text;
+        gameOverPanel.SetActive(true);
+        pauseButton.gameObject.SetActive(false);
+    }
 
 	/// <summary>
 	/// Makes a text appear in a pulse like animation

@@ -9,6 +9,8 @@ TagManager:
   - Key
   - NextLevelDoor
   - ExitLevelDoor
+  - Leaf
+  - DeadlyObstacle
   layers:
   - Default
   - TransparentFX

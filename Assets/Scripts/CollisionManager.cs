@@ -8,8 +8,21 @@ public class CollisionManager : MonoBehaviour
     void Start()
     {
 		uIManagerInstance = GameObject.Find("UIManager").GetComponent<UIManager>();
-
 	}
+
+	private void OnCollisionEnter(UnityEngine.Collision collision)
+	{
+		GameObject collided = collision.gameObject;
+
+		if (collisionTime != Time.time)
+        {
+            if (collided.tag == "DeadlyObstacle")
+            {
+                uIManagerInstance.ShowGameOver();
+            }
+            collisionTime = Time.time;
+        }     
+    }
 
 	/// <summary>
 	/// Hanldes trigger collisions
@@ -44,12 +57,16 @@ public class CollisionManager : MonoBehaviour
 					uIManagerInstance.KeyTextAppear(false);
 				}
 			}
-			if (collided.tag == "Tadpole")
+            if (collided.tag == "Tadpole")
 			{
 				uIManagerInstance.IncreasePoints(1);
 				Destroy(collided);
-			}
-			collisionTime = Time.time;
+            }
+            if (collided.tag == "DeadlyObstacle")
+            {
+                uIManagerInstance.ShowGameOver();
+            }
+            collisionTime = Time.time;
 		}
 	}
 }
