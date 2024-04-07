@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public class MainMenu : MonoBehaviour
 {
     public GameObject SettingsPanel;
+	public GameObject InstructionsPanel;
     public GameObject MainPanel;
  	public Slider gameVolumeSlider;
 
@@ -24,8 +25,14 @@ public class MainMenu : MonoBehaviour
     
         public void ShowSettingsPanel()
 	{
-     
+
             SettingsPanel.SetActive(true);
+            MainPanel.SetActive(false);
+	}
+
+	    public void ShowInstructionsPanel()
+	{
+            InstructionsPanel.SetActive(true);
             MainPanel.SetActive(false);
 	}
 
@@ -44,6 +51,10 @@ public class MainMenu : MonoBehaviour
 		if (SettingsPanel.activeSelf)
 		{
 			SettingsPanel.SetActive(false);
+		}
+		if (InstructionsPanel.activeSelf)
+		{
+			InstructionsPanel.SetActive(false);
 		}
 	}
 
