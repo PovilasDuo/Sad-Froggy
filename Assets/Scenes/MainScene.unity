@@ -1467,7 +1467,7 @@ RectTransform:
   m_GameObject: {fileID: 793720481}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.1, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 1.6, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 36795375}
@@ -3007,18 +3007,18 @@ MonoBehaviour:
   grassTile: {fileID: 994932587217468100, guid: 3fdc50879b1c6a448b1489964439f5e2,
     type: 3}
   tadpole: {fileID: 8039104258810079278, guid: 2c6eb287c23ac3645877961dbebe904b, type: 3}
-  car: {fileID: 7351294749534293964, guid: bf317a127ab488e49aa72d4f0e3bbbba, type: 3}
-  rock: {fileID: 7717431993456630255, guid: 515c2d070392c4d4eae74231b962d8ac, type: 3}
-  key: {fileID: 8594734251302265989, guid: 71b20f1b299cef649b9858748bc0df5c, type: 3}
+  car: {fileID: 8405798626161813773, guid: f0739dcc6b78abf46838100d9246bfb5, type: 3}
+  rock: {fileID: 8949423727299586976, guid: 084bf8ff870dfe247afe9162ed53a4c3, type: 3}
+  key: {fileID: 7139305813130221010, guid: 81b9df3b07c83004aa721a1da2d3998a, type: 3}
   border: {fileID: 7411700632972709782, guid: 1e08ae223f432824b9a1cff3ad57db78, type: 3}
-  leaf: {fileID: 1914320520982028635, guid: 1da01f6c28c9dd14a8eaa174cc6d16d3, type: 3}
+  leaf: {fileID: 3676485132677468217, guid: 05b87586c758c084390a3d2a14984708, type: 3}
   roadCount: 1
   riverCount: 1
   rockCount: 1
   tadpoleCount: 1
-  exitDoor: {fileID: 2549014252930824701, guid: bdffe80b9ecf7594bb9579ca58f4da2c,
+  exitDoor: {fileID: 2121458563182236843, guid: 8441b6dc9eeb0f04fbcad6a349c426bc,
     type: 3}
-  nextLevelDoor: {fileID: 1647000192266116057, guid: 3d3854f629dd7364194eb7a5d917941f,
+  nextLevelDoor: {fileID: 5423272537875399163, guid: 997e95e015ac9a344aa19c216a3f088d,
     type: 3}
   gates: {fileID: 2195443138636253812, guid: 3ba7c8a802d7b2c4287674a2c224da8a, type: 3}
   levelGameobject: {fileID: 0}
