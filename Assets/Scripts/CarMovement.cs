@@ -16,7 +16,7 @@ public class CarMovement : MonoBehaviour
 
     void Update()
     {
-        transform.Translate(Vector3.up * speed * Time.deltaTime);
+        transform.Translate(Vector3.right * speed * Time.deltaTime);
 
         if (transform.position.x >= endPosition / 2)
         {

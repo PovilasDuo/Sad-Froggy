@@ -235,10 +235,10 @@ public class TilemapManager : MonoBehaviour
 			Vector3 obstaclePosition = GetRandomCell();
 			occupiedTiles[(int)obstaclePosition.x][(int)obstaclePosition.z] = true;
 
-			Vector3 worldPos = tilemapOrigin + new Vector3(obstaclePosition.x * tileSize, obstacle.GetComponent<Renderer>().bounds.size.y / 2, obstaclePosition.z * tileSize);
+            Vector3 worldPos = tilemapOrigin + new Vector3(obstaclePosition.x * tileSize, 0, obstaclePosition.z * tileSize);
 
 			GameObject go = Instantiate(obstacle, worldPos, Quaternion.identity);
-			go.transform.SetParent(levelGameobject.transform, false);
+            go.transform.SetParent(levelGameobject.transform, false);
 		}
 	}
 
@@ -264,7 +264,6 @@ public class TilemapManager : MonoBehaviour
 
                     Vector3 worldPos = tilemapOrigin + new Vector3(newPos * tileSize, 0.1f, r * tileSize);
                     GameObject go = Instantiate(leaf, worldPos, Quaternion.identity);
-					go.transform.Rotate(90f, 0f, 0f);
                     go.transform.SetParent(levelGameobject.transform, false);
                 }
             }
@@ -281,7 +280,6 @@ public class TilemapManager : MonoBehaviour
             {
                 Vector3 worldPos = tilemapOrigin + new Vector3(-1 * tileSize, 1f, r * tileSize);
                 GameObject go = Instantiate(car, worldPos, Quaternion.identity);
-                go.transform.Rotate(270f, 90f, 180f);
                 go.transform.SetParent(levelGameobject.transform, false);
             }
         }
@@ -409,12 +407,10 @@ public class TilemapManager : MonoBehaviour
         }
         else if (borderNumber == exitGap)
 		{
-			worldPos.y += 3; // TODO remove when we have a model for door
 			go = Instantiate(exitDoor, worldPos, Quaternion.Euler(rotation));
 		}
 		else if (borderNumber == nextLevelGap)
 		{
-			worldPos.y += 3; // TODO remove when we have a model for door
 			go = Instantiate(nextLevelDoor, worldPos, Quaternion.Euler(rotation));
 		}
         else

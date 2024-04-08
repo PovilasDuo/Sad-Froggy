@@ -3008,7 +3008,7 @@ MonoBehaviour:
     type: 3}
   tadpole: {fileID: 8039104258810079278, guid: 2c6eb287c23ac3645877961dbebe904b, type: 3}
   car: {fileID: 7351294749534293964, guid: bf317a127ab488e49aa72d4f0e3bbbba, type: 3}
-  rock: {fileID: 733157605454707359, guid: fb5cb58eabc7eec4396084e6f50e27ea, type: 3}
+  rock: {fileID: 7717431993456630255, guid: 515c2d070392c4d4eae74231b962d8ac, type: 3}
   key: {fileID: 8594734251302265989, guid: 71b20f1b299cef649b9858748bc0df5c, type: 3}
   border: {fileID: 7411700632972709782, guid: 1e08ae223f432824b9a1cff3ad57db78, type: 3}
   leaf: {fileID: 1914320520982028635, guid: 1da01f6c28c9dd14a8eaa174cc6d16d3, type: 3}
