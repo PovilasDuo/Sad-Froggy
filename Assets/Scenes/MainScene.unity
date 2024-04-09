@@ -575,6 +575,7 @@ GameObject:
   - component: {fileID: 330585545}
   - component: {fileID: 330585544}
   - component: {fileID: 330585547}
+  - component: {fileID: 330585548}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -702,6 +703,19 @@ MonoBehaviour:
     mipBias: 0
     varianceClampScale: 0.9
     contrastAdaptiveSharpening: 0
+--- !u!114 &330585548
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 330585543}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f5cfb345fcd21248a5d92404d319071, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 5
 --- !u!1 &361164820
 GameObject:
   m_ObjectHideFlags: 0
@@ -2997,8 +3011,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tilemap: {fileID: 1598683174}
-  tilesNumberX: 4
-  tilesNumberZ: 4
+  tilesNumberX: 6
+  tilesNumberZ: 6
   tileSize: 10
   roadTile: {fileID: 4559975445779571382, guid: a385e79be571dfe4f975d28b9da05e97,
     type: 3}
@@ -3012,15 +3026,15 @@ MonoBehaviour:
   key: {fileID: 7139305813130221010, guid: 81b9df3b07c83004aa721a1da2d3998a, type: 3}
   border: {fileID: 7411700632972709782, guid: 1e08ae223f432824b9a1cff3ad57db78, type: 3}
   leaf: {fileID: 3676485132677468217, guid: 05b87586c758c084390a3d2a14984708, type: 3}
-  roadCount: 1
+  roadCount: 2
   riverCount: 1
-  rockCount: 1
-  tadpoleCount: 1
+  rockCount: 4
+  tadpoleCount: 3
   exitDoor: {fileID: 2121458563182236843, guid: 8441b6dc9eeb0f04fbcad6a349c426bc,
     type: 3}
   nextLevelDoor: {fileID: 5423272537875399163, guid: 997e95e015ac9a344aa19c216a3f088d,
     type: 3}
-  gates: {fileID: 2195443138636253812, guid: 3ba7c8a802d7b2c4287674a2c224da8a, type: 3}
+  gates: {fileID: 2077806178225854303, guid: 83d14505fa0a89b43a7d15b7e37c88e8, type: 3}
   levelGameobject: {fileID: 0}
   levelNr: 1
   destroying: 0
@@ -4141,7 +4155,7 @@ PrefabInstance:
     - target: {fileID: 2095531475352422000, guid: 042cf52f20b0ae54bbce9ccb0a809a87,
         type: 3}
       propertyPath: moveSpeed
-      value: 7
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2095531475352422000, guid: 042cf52f20b0ae54bbce9ccb0a809a87,
         type: 3}

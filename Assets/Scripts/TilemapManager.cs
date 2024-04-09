@@ -119,7 +119,7 @@ public class TilemapManager : MonoBehaviour
 	public void CheckBorders(Vector3 position)
 	{
         levelGameobject.transform.position = new Vector3(levelGameobject.transform.position.x, 0, levelGameobject.transform.position.z + (tilesNumberZ + 1) * tileSize);
-        StartCoroutine(SmoothCameraMovement(new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, Camera.main.transform.position.z + (tilesNumberX + 1) * tileSize * 1f), 3f));
+        //StartCoroutine(SmoothCameraMovement(new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, Camera.main.transform.position.z + (tilesNumberZ + 1) * tileSize * 1f), 3f));
         CreateBorders(true, false, true, true);
     }
 
@@ -403,7 +403,7 @@ public class TilemapManager : MonoBehaviour
 		if (shouldCreateGate)
 		{
             worldPos.y += 3; // TODO remove when we have a model for gates
-            go = Instantiate(gates, worldPos, Quaternion.Euler(rotation));
+            go = Instantiate(gates, worldPos, Quaternion.Euler(new Vector3(0, 0, 0)));
         }
         else if (borderNumber == exitGap)
 		{

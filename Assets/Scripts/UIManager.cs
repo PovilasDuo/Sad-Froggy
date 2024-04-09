@@ -69,8 +69,8 @@ public class UIManager : MonoBehaviour
 	/// </summary>
 	public void Restart()
 	{
-		Time.timeScale = 1;
 		SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+		Time.timeScale = 1;
 	}
 
 	/// <summary>
@@ -106,7 +106,6 @@ public class UIManager : MonoBehaviour
 
 	public void ShowGameOver()
     {
-        Time.timeScale = 0;
 		finalScoreText.text = "Collected tadpoles: " + scoreText.text;
         gameOverPanel.SetActive(true);
         pauseButton.gameObject.SetActive(false);
