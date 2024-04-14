@@ -22,7 +22,7 @@ public class CameraVisibility : MonoBehaviour
 			mainCamera.transform.Translate(Vector3.forward * speed * Time.deltaTime, Space.World);
 			if (!CheckVisibility())
 			{
-				Destroy(froggy, 1f);
+				Destroy(froggy);
 				GameObject.Find("UIManager").GetComponent<UIManager>().ShowGameOver();
 			}
 		}

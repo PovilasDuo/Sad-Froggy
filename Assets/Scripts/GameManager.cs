@@ -17,7 +17,9 @@ public class GameManager : MonoBehaviour
 		tilemapManagerInstance = tileMapGO.GetComponent<TilemapManager>();
 		uIManagerInstance = UIManagerGO.GetComponent<UIManager>();
 
-        tilemapManagerInstance.GenerateMap();
+        tilemapManagerInstance.GenerateMap(false, false);
+		tilemapManagerInstance.GenerateMap(true, false);
+		tilemapManagerInstance.GenerateMap(true, false);
 		tadPoleCount = tilemapManagerInstance.tadpoleCount;
 	}
 }

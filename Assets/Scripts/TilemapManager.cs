@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,10 +22,10 @@ public class TilemapManager : MonoBehaviour
 	public GameObject key;
 	public GameObject border;
 
-    [Header("Moving obstacles")]
-    public GameObject leaf;
+	[Header("Moving obstacles")]
+	public GameObject leaf;
 
-    [Header("Obstacle counts")]
+	[Header("Obstacle counts")]
 	public int roadCount = 2;
 	public int riverCount = 2;
 	public int rockCount = 5;
@@ -49,7 +48,7 @@ public class TilemapManager : MonoBehaviour
 
 	public bool destroying = false;
 
-	enum LinearObstacles
+	public enum LinearObstacles
 	{
 		None,
 		River,
@@ -68,10 +67,16 @@ public class TilemapManager : MonoBehaviour
 	}
 
 	/// <summary>
-	/// Generates a map of default size
+	///  Generates a map of default size
 	/// </summary>
-	public void GenerateMap()
+	/// <param name="top">If the top border should be emmitted</param>
+	public void GenerateMap(bool top, bool camerMovement)
 	{
+/*		if (GameObject.Find("Level " + (levelNr - 1)) != null)
+		{
+			GameObject.Find("Level " + (levelNr - 1)).GetComponent<CarManager>().running = false;
+		}*/
+
 		ClearOccupation();
 		SetTilemapSize(tilesNumberX, tilesNumberZ);
 		SetTilemapPosition();
@@ -81,47 +86,28 @@ public class TilemapManager : MonoBehaviour
 		CreateObstacles(rock, rockCount);
 		CreateLeaves();
 		levelGameobject.AddComponent<CarManager>();
+		levelGameobject.GetComponent<CarManager>().occupiedRows = occupiedRows;
 
-        CreateCollectibles(tadpole, tadpoleCount);
+		CreateCollectibles(tadpole, tadpoleCount);
 		SpawnKeyRandom();
 
 		CreateBase();
-		CreateBorders(true	, true, true, true);
-		PrepareNextLevel();
-	}
-
-    /// <summary>
-    /// Generates a map based on the position
-    /// </summary>
-    /// <param name="position">The position that it takes into account</param>
-    public void GenerateMap(Vector3 position)
-	{
-		GameObject.Find("Level " + (levelNr - 1)).GetComponent<CarManager>().running = false;
-		ClearOccupation();
-		SetTilemapSize(tilesNumberX, tilesNumberZ);
-		SetTilemapPosition();
-
-		CreateLinearObstacles(roadTile, roadCount);
-		CreateLinearObstacles(riverTile, riverCount);
-		CreateObstacles(rock, rockCount);
-		CreateLeaves();
-        levelGameobject.AddComponent<CarManager>();
-
-        CreateCollectibles(tadpole, tadpoleCount);
-		SpawnKeyRandom();
-
-		CreateBase();
-		CheckBorders(position);
+		if (top)
+		{
+			levelGameobject.transform.position = new Vector3(levelGameobject.transform.position.x, 0, levelGameobject.transform.position.z + (tilesNumberZ + 1) * tileSize);
+			if (camerMovement)
+			{
+				Camera.main.GetComponent<CameraVisibility>().enabled = false;
+				float positionToMoveTo = (GameObject.Find("Level " + (levelNr - 2)).transform.position.z - (tilesNumberZ + 1) / 2 * tileSize) - Camera.main.transform.position.z;
+				StartCoroutine(SmoothCameraMovement(new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, Camera.main.transform.position.z + positionToMoveTo), 2f));
+				Camera.main.GetComponent<CameraVisibility>().enabled = true;
+			}
+			CreateBorders(true, false, true, true);
+		}
+		else CreateBorders(true, !top, true, true);
 
 		PrepareNextLevel();
 	}
-
-	public void CheckBorders(Vector3 position)
-	{
-        levelGameobject.transform.position = new Vector3(levelGameobject.transform.position.x, 0, levelGameobject.transform.position.z + (tilesNumberZ + 1) * tileSize);
-        //StartCoroutine(SmoothCameraMovement(new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, Camera.main.transform.position.z + (tilesNumberZ + 1) * tileSize * 1f), 3f));
-        CreateBorders(true, false, true, true);
-    }
 
 	/// <summary>
 	/// Enumerates camera positino to the targeted position
@@ -149,7 +135,7 @@ public class TilemapManager : MonoBehaviour
 	private void ClearOccupation()
 	{
 		occupiedRows = Enumerable.Repeat(LinearObstacles.None, tilesNumberZ).ToArray();
-        occupiedTiles = new bool[tilesNumberX][];
+		occupiedTiles = new bool[tilesNumberX][];
 		for (int i = 0; i < tilesNumberX; i++)
 		{
 			occupiedTiles[i] = new bool[tilesNumberZ];
@@ -210,7 +196,7 @@ public class TilemapManager : MonoBehaviour
 			if (obstacle == roadTile) occupiedRows[obstaclePosition] = LinearObstacles.Road;
 			else if (obstacle == riverTile) occupiedRows[obstaclePosition] = LinearObstacles.River;
 
-            for (int x = 0; x < tilesNumberX; x++)
+			for (int x = 0; x < tilesNumberX; x++)
 			{
 				occupiedTiles[x][obstaclePosition] = true;
 				Vector3 worldPos = tilemapOrigin + new Vector3(x * tileSize, 0, obstaclePosition * tileSize);
@@ -235,55 +221,74 @@ public class TilemapManager : MonoBehaviour
 			Vector3 obstaclePosition = GetRandomCell();
 			occupiedTiles[(int)obstaclePosition.x][(int)obstaclePosition.z] = true;
 
-            Vector3 worldPos = tilemapOrigin + new Vector3(obstaclePosition.x * tileSize, 0, obstaclePosition.z * tileSize);
+			Vector3 worldPos = tilemapOrigin + new Vector3(obstaclePosition.x * tileSize, 0, obstaclePosition.z * tileSize);
 
 			GameObject go = Instantiate(obstacle, worldPos, Quaternion.identity);
-            go.transform.SetParent(levelGameobject.transform, false);
+			go.transform.SetParent(levelGameobject.transform, false);
 		}
 	}
 
-    public void CreateLeaves()
-    {
-        var tilemapOrigin = tilemap.transform.position;
-
-        for (int r = 0; r < occupiedRows.Length; r++)
-        {
-            if (occupiedRows[r] == LinearObstacles.River)
-            {
-                var positions = new List<int>();
-                var leavesCount = UnityEngine.Random.Range(1, 3);
-
-                for (int i = 0; i < leavesCount; i++)
-                {
-                    int newPos;
-                    do
-                    {
-                        newPos = UnityEngine.Random.Range(0, tilesNumberX);
-                    } while (positions.Contains(newPos));
-                    positions.Add(newPos);
-
-                    Vector3 worldPos = tilemapOrigin + new Vector3(newPos * tileSize, 0.1f, r * tileSize);
-                    GameObject go = Instantiate(leaf, worldPos, Quaternion.identity);
-                    go.transform.SetParent(levelGameobject.transform, false);
-                }
-            }
-        }
-    }
-
-	public void CreateCar(GameObject levelGameobject)
+	/// <summary>
+	/// Creates leaves on the river
+	/// </summary>
+	public void CreateLeaves()
 	{
-        var tilemapOrigin = tilemap.transform.position;
+		var tilemapOrigin = tilemap.transform.position;
 
-        for (int r = 0; r < occupiedRows.Length; r++)
-        {
-            if (occupiedRows[r] == LinearObstacles.Road)
-            {
-                Vector3 worldPos = tilemapOrigin + new Vector3(-1 * tileSize, 1f, r * tileSize);
-                GameObject go = Instantiate(car, worldPos, Quaternion.identity);
-                go.transform.SetParent(levelGameobject.transform, false);
-            }
-        }
-    }
+		for (int r = 0; r < occupiedRows.Length; r++)
+		{
+			if (occupiedRows[r] == LinearObstacles.River)
+			{
+				var positions = new List<int>();
+				var leavesCount = UnityEngine.Random.Range(1, 3);
+
+				for (int i = 0; i < leavesCount; i++)
+				{
+					int newPos;
+					do
+					{
+						newPos = UnityEngine.Random.Range(0, tilesNumberX);
+					} while (positions.Contains(newPos));
+					positions.Add(newPos);
+
+					Vector3 worldPos = tilemapOrigin + new Vector3(newPos * tileSize, 0.1f, r * tileSize);
+					GameObject go = Instantiate(leaf, worldPos, Quaternion.identity);
+					go.transform.SetParent(levelGameobject.transform, false);
+				}
+			}
+		}
+	}
+
+	/// <summary>
+	/// Creates cars on the roads
+	/// </summary>
+	/// <param name="levelGameobject"></param>
+	public GameObject CreateCar(GameObject levelGameobject, LinearObstacles[] occupiedRows)
+	{
+		var tilemapOrigin = tilemap.transform.position;
+		GameObject go = new GameObject();
+		for (int r = 0; r < occupiedRows.Length; r++)
+		{
+			if (occupiedRows[r] == LinearObstacles.Road)
+			{
+				Vector3 worldPos = tilemapOrigin + new Vector3(-1 * tileSize, 1f, r * tileSize);
+				bool backwards = false;
+				if (Random.Range(0, 2) == 1) 
+				{
+					worldPos = new Vector3(-worldPos.x, worldPos.y, worldPos.z);
+					backwards = true;
+				}
+				go = Instantiate(car, worldPos, Quaternion.identity);
+				go.transform.SetParent(levelGameobject.transform, false);
+				if (backwards)
+				{
+					go.GetComponent<CarMovement>().backwards = true;
+					go.transform.rotation = Quaternion.Euler(0f, 180f, 0f);
+				}
+			}
+		}
+		return go;
+	}
 
 	/// <summary>
 	/// Creates collectible gameobjects
@@ -341,7 +346,7 @@ public class TilemapManager : MonoBehaviour
 		Vector3Int mapSize = tilemap.size;
 
 		borderCount = (tilesNumberX + tilesNumberZ) * 2 + 2;
-		GetRandomGaps(top, bottom, right, left);
+		GetRandomGaps();
 
 		if (top)
 		{
@@ -351,22 +356,22 @@ public class TilemapManager : MonoBehaviour
 			}
 		}
 		if (right)
-        {
-            for (int z = mapSize.z; z >= 0; z--)
+		{
+			for (int z = mapSize.z; z >= 0; z--)
 			{
 				CreateBorderTile(mapSize.x * tileSize, 0, z * tileSize, tilemapOrigin, new Vector3(0f, 90f, 0f), ShouldCreateGate(z)); // Right border
 			}
 		}
 		if (bottom)
-        {
-            for (int x = mapSize.x; x >= -1; x--)
+		{
+			for (int x = mapSize.x; x >= -1; x--)
 			{
 				CreateBorderTile(x * tileSize, 0, -tileSize, tilemapOrigin, Vector3.zero); // Top border
 			}
 		}
 		if (left)
-        {
-            for (int z = 0; z <= mapSize.z; z++)
+		{
+			for (int z = 0; z <= mapSize.z; z++)
 			{
 				CreateBorderTile(-tileSize, 0, z * tileSize, tilemapOrigin, new Vector3(0f, -90f, 0f), ShouldCreateGate(z)); // Left border
 			}
@@ -389,23 +394,12 @@ public class TilemapManager : MonoBehaviour
 		go.transform.SetParent(levelGameobject.transform, false);
 
 		Vector3 localPos = go.transform.localPosition;
-		Vector3 worldPosForRaycast = go.transform.parent.TransformPoint(localPos);
-
-		RaycastHit hit;
-		if (Physics.SphereCast(worldPosForRaycast, 3.0f, Vector3.up, out hit, 3f) ||
-			Physics.SphereCast(worldPosForRaycast, 3.0f, Vector3.down, out hit, 3f))
-		{
-			Debug.Log("Parent object: " + hit.collider.name );
-			Destroy(hit.collider.transform.parent.gameObject);
-
-		}
-
 		if (shouldCreateGate)
 		{
-            worldPos.y += 3; // TODO remove when we have a model for gates
-            go = Instantiate(gates, worldPos, Quaternion.Euler(new Vector3(0, 0, 0)));
-        }
-        else if (borderNumber == exitGap)
+			worldPos.y += 3;
+			go = Instantiate(gates, worldPos, Quaternion.Euler(new Vector3(0, 0, 0)));
+		}
+		else if (borderNumber == exitGap)
 		{
 			go = Instantiate(exitDoor, worldPos, Quaternion.Euler(rotation));
 		}
@@ -413,13 +407,18 @@ public class TilemapManager : MonoBehaviour
 		{
 			go = Instantiate(nextLevelDoor, worldPos, Quaternion.Euler(rotation));
 		}
-        else
+		else
 		{
 			go = Instantiate(border, worldPos, Quaternion.Euler(rotation));
 		}
 		go.transform.SetParent(levelGameobject.transform, false);
 	}
 
+	/// <summary>
+	/// Check if a gate should be created in the position
+	/// </summary>
+	/// <param name="z">Position</param>
+	/// <returns>True if it should be created</returns>
 	private bool ShouldCreateGate(int z)
 	{
 		if (z >= 0 && z < tilesNumberZ && occupiedRows[z] == LinearObstacles.Road)
@@ -428,77 +427,14 @@ public class TilemapManager : MonoBehaviour
 	}
 
 	/// <summary>
-	/// Searches and creates exits
+	/// Creates random gaps for exit and next level doors
 	/// </summary>
-	/// <param name="top">If TOP the border should be created</param>
-	/// <param name="bottom">If BOTTOM the border should be created</param>
-	/// <param name="right">If RIGHT the border should be created</param>
-	/// <param name="left">If LEFT the border should be created</param>
-	private void GetRandomGaps(bool top, bool bottom, bool right, bool left)
+	private void GetRandomGaps()
 	{
-		int randomN = 1;//= (int)Mathf.Round(UnityEngine.Random.Range(1f, 8f));
-		int addative = 2;
-
-		if (!top || !bottom || !right || !left)
-		{
-			randomN = 1;// (int)Mathf.Round(UnityEngine.Random.Range(1f, 4f));
-			addative = 2;
-		}
-
-		///Diferent sets of multiplications for different sizes of levels
-		float[] multiplactionOdd = new float[] { 3.5f, 6f, 8f };
-		float[] multiplcationNOdd = new float[] { 3.5f, 5.5f, 7.5f };
-		float[] multiplcationEven = new float[] { 3f, 5f, 6.5f };
-		var multiplication = new float[3];
-
-		if ((tilesNumberZ % 2 == 0 && tilesNumberX % 2 != 0) || (tilesNumberZ % 2 != 0 && tilesNumberX % 2 == 0)) multiplication = multiplactionOdd;
-		else if (tilesNumberZ % 2 != 0 && tilesNumberX % 2 != 0) multiplication = multiplcationNOdd;
-		else multiplication = multiplcationEven;
-
-		if (randomN == 1)
-		{
-			exitGap = Mathf.CeilToInt((tilesNumberX + addative) / 2f);
-            nextLevelGap = Mathf.CeilToInt((tilesNumberX + addative) / 2f +1);
-           // nextLevelGap = Mathf.CeilToInt((tilesNumberX + addative) / 2 * multiplication[0]);
-		}
-		else if (randomN == 2)
-		{
-			nextLevelGap = Mathf.CeilToInt((tilesNumberX + addative) / 2f);
-			exitGap = Mathf.CeilToInt((tilesNumberX + addative) / 2 * multiplication[0]);
-		}
-		else if (randomN == 3)
-		{
-			nextLevelGap = Mathf.CeilToInt((tilesNumberX + addative) / 2 * multiplication[0]);
-			exitGap = Mathf.CeilToInt((tilesNumberX + addative) / 2 * multiplication[1]);
-		}
-		else if (randomN == 4)
-		{
-			exitGap = Mathf.CeilToInt((tilesNumberX + addative) / 2 * multiplication[0]);
-			nextLevelGap = Mathf.CeilToInt((tilesNumberX + addative) / 2 * multiplication[1]);
-		}
-		else if (randomN == 5)
-		{
-			nextLevelGap = Mathf.CeilToInt((tilesNumberX + addative) / 2 * multiplication[2]);
-			exitGap = Mathf.CeilToInt((tilesNumberX + addative) / 2 * multiplication[1]);
-		}
-		else if (randomN == 6)
-		{
-			exitGap = Mathf.CeilToInt((tilesNumberX + addative) / 2 * multiplication[2]);
-			nextLevelGap = Mathf.CeilToInt((tilesNumberX + addative) / 2 * multiplication[1]);
-		}
-		else if (randomN == 7)
-		{
-			nextLevelGap = Mathf.CeilToInt((tilesNumberX + addative) / 2 * multiplication[2]);
-			exitGap = Mathf.CeilToInt((tilesNumberX + addative) / 2f);
-		}
-		else if (randomN == 8)
-		{
-			exitGap = Mathf.CeilToInt((tilesNumberX + addative) / 2 * multiplication[2]);
-			nextLevelGap = Mathf.CeilToInt((tilesNumberX + addative) / 2f);
-		}
+		exitGap = Mathf.CeilToInt((tilesNumberX + 2) / 2f);
+		nextLevelGap = Mathf.CeilToInt((tilesNumberX + 2) / 2f + 1);
 		//Debug.Log("random: " + randomN + "; " + "exitGap: " + exitGap + " nextLevelGap: " + nextLevelGap + " addative:" + addative); ////For debugging exits
 	}
-
 
 	/// <summary>
 	/// returns row where no other obstacles exist
@@ -511,7 +447,6 @@ public class TilemapManager : MonoBehaviour
 		{
 			row = UnityEngine.Random.Range(1, tilesNumberZ);
 		} while (occupiedRows[row] != LinearObstacles.None);
-
 		return row;
 	}
 
@@ -528,7 +463,6 @@ public class TilemapManager : MonoBehaviour
 			cellX = UnityEngine.Random.Range(0, tilesNumberX);
 			cellZ = UnityEngine.Random.Range(1, tilesNumberZ);
 		} while (occupiedTiles[cellX][cellZ]);
-
 		return new Vector3(cellX, 0, cellZ);
 	}
 
@@ -540,9 +474,7 @@ public class TilemapManager : MonoBehaviour
 		Vector3 tilemapOrigin = tilemap.transform.position;
 		Vector3 obstaclePosition = GetRandomCell();
 		occupiedTiles[(int)obstaclePosition.x][(int)obstaclePosition.z] = true;
-
 		Vector3 worldPos = tilemapOrigin + new Vector3(obstaclePosition.x * tileSize, key.GetComponent<Renderer>().bounds.size.y / 2, obstaclePosition.z * tileSize);
-
 		GameObject go = Instantiate(key, worldPos, Quaternion.identity);
 		go.transform.SetParent(levelGameobject.transform, false);
 	}

@@ -441,6 +441,7 @@ MonoBehaviour:
   deathSound: {fileID: 1040297622237105431}
   moveSpeed: 10
   moveDistance: 5
+  hasKey: 0
 --- !u!82 &7542927340445538226
 AudioSource:
   m_ObjectHideFlags: 0

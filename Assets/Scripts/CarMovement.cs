@@ -6,21 +6,33 @@ public class CarMovement : MonoBehaviour
     public float endPosition;
     private int tileSize;
     private int tilesNumber;
+    public bool backwards = false;
+
 
     void Start()
     {
         tileSize = GameObject.Find("TilemapManager").GetComponent<TilemapManager>().tileSize;
         tilesNumber = GameObject.Find("TilemapManager").GetComponent<TilemapManager>().tilesNumberZ;
-        endPosition = tilesNumber * tileSize + tileSize;
-    }
+		endPosition = tilesNumber * tileSize + tileSize;
+		if (backwards)
+        {
+			endPosition *= -1;
+		}
+	}
 
     void Update()
     {
-        transform.Translate(Vector3.right * speed * Time.deltaTime);
-
-        if (transform.position.x >= endPosition / 2)
+        if (backwards)
         {
-            Destroy(gameObject);
-        }
-    }
+			if (transform.position.x <= endPosition / 2)
+			{
+				Destroy(gameObject);
+			}
+		}
+		else if (transform.position.x >= endPosition / 2)
+		{
+			Destroy(gameObject);
+		}
+		transform.Translate(Vector3.right * speed * Time.deltaTime);
+	}
 }

@@ -1,28 +1,28 @@
 using UnityEngine;
 
-public class CollisionManager : MonoBehaviour
+public class FroggyCollision : Collision
 {
-    private UIManager uIManagerInstance;
+	private UIManager uIManagerInstance;
 	private float collisionTime = 0;
 
-    void Start()
-    {
+	void Start()
+	{
 		uIManagerInstance = GameObject.Find("UIManager").GetComponent<UIManager>();
 	}
-
+/*
 	private void OnCollisionEnter(UnityEngine.Collision collision)
 	{
 		GameObject collided = collision.gameObject;
 
 		if (collisionTime != Time.time)
-        {
-            if (collided.tag == "DeadlyObstacle")
-            {
-                uIManagerInstance.ShowGameOver();
-            }
-            collisionTime = Time.time;
-        }     
-    }
+		{
+			if (collided.tag == "DeadlyObstacle")
+			{
+				uIManagerInstance.ShowGameOver();
+			}
+			collisionTime = Time.time;
+		}
+	}*/
 
 	/// <summary>
 	/// Hanldes trigger collisions
@@ -38,7 +38,7 @@ public class CollisionManager : MonoBehaviour
 				this.gameObject.GetComponent<Movement>().hasKey = true;
 				uIManagerInstance.KeyTextAppear(true);
 				Destroy(collided);
-            }
+			}
 			if (gameObject.GetComponent<Movement>().hasKey)
 			{
 				if (collided.tag == "ExitLevelDoor")
@@ -50,23 +50,18 @@ public class CollisionManager : MonoBehaviour
 				}
 				else if (collided.tag == "NextLevelDoor")
 				{
-					//uIManagerInstance.Restart();
-					GameObject.Find("TilemapManager").GetComponent<TilemapManager>().GenerateMap(collided.transform.localPosition);
+					GameObject.Find("TilemapManager").GetComponent<TilemapManager>().GenerateMap(true, true);
 					Destroy(collided);
 					this.gameObject.GetComponent<Movement>().hasKey = false;
 					uIManagerInstance.KeyTextAppear(false);
 				}
 			}
-            if (collided.tag == "Tadpole")
+			if (collided.tag == "Tadpole")
 			{
 				uIManagerInstance.IncreasePoints(1);
 				Destroy(collided);
-            }
-            if (collided.tag == "DeadlyObstacle")
-            {
-                uIManagerInstance.ShowGameOver();
-            }
-            collisionTime = Time.time;
+			}
+			collisionTime = Time.time;
 		}
 	}
 }
