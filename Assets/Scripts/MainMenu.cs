@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -9,6 +6,7 @@ public class MainMenu : MonoBehaviour
 {
     public GameObject SettingsPanel;
 	public GameObject InstructionsPanel;
+	public GameObject ShopPanel;
     public GameObject MainPanel;
  	public Slider gameVolumeSlider;
 
@@ -21,22 +19,29 @@ public class MainMenu : MonoBehaviour
     public void PlayGame()
     {
 		SceneManager.LoadScene("MainScene");
+		Time.timeScale = 1;
 	}
     
-        public void ShowSettingsPanel()
+    public void ShowSettingsPanel()
 	{
 
-            SettingsPanel.SetActive(true);
-            MainPanel.SetActive(false);
+        SettingsPanel.SetActive(true);
+        MainPanel.SetActive(false);
 	}
 
-	    public void ShowInstructionsPanel()
+	public void ShowInstructionsPanel()
 	{
-            InstructionsPanel.SetActive(true);
-            MainPanel.SetActive(false);
+        InstructionsPanel.SetActive(true);
+        MainPanel.SetActive(false);
 	}
 
-		public void ExitGame()
+	public void ShowShopPanel()
+    {
+        ShopPanel.SetActive(true);
+        MainPanel.SetActive(false);
+    }
+
+	public void ExitGame()
 	{
         #if UNITY_EDITOR
 		    UnityEditor.EditorApplication.isPlaying = false;
@@ -45,7 +50,7 @@ public class MainMenu : MonoBehaviour
         #endif
 	}
 
-		public void Back()
+	public void Back()
 	{
 		MainPanel.SetActive(true);
 		if (SettingsPanel.activeSelf)
@@ -55,6 +60,10 @@ public class MainMenu : MonoBehaviour
 		if (InstructionsPanel.activeSelf)
 		{
 			InstructionsPanel.SetActive(false);
+		}
+		if (ShopPanel.activeSelf)
+		{
+			ShopPanel.SetActive(false);
 		}
 	}
 

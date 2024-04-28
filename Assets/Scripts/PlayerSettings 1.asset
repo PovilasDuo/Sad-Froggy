@@ -1,0 +1,54 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4265cea3a484cf4f92553d243fcccdd, type: 3}
+  m_Name: PlayerSettings 1
+  m_EditorClassIdentifier: 
+  totalTadpoles: 10
+  skin: 0
+  decoration: 0
+  items:
+  - id: 0
+    title: Crown
+    imageIndex: 0
+    price: 1
+    inUse: 0
+    bought: 0
+  - id: 1
+    title: Mushroom hat
+    imageIndex: 1
+    price: 1
+    inUse: 0
+    bought: 0
+  - id: 2
+    title: 'Pink skin '
+    imageIndex: 2
+    price: 1
+    inUse: 0
+    bought: 0
+  - id: 3
+    title: Blue skin
+    imageIndex: 3
+    price: 3
+    inUse: 0
+    bought: 0
+  - id: 4
+    title: Speed
+    imageIndex: 4
+    price: 5
+    inUse: 0
+    bought: 0
+  - id: 5
+    title: Tadpoles
+    imageIndex: 5
+    price: 50
+    inUse: 0
+    bought: 0

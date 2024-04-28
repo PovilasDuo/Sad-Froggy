@@ -7,14 +7,15 @@ using UnityEngine.UI;
 public class UIManager : MonoBehaviour
 {
 	private GameManager gameManagerInstance;
+    public PlayerSettings playerSettings;
 
-	public TextMeshProUGUI keyText;
+    public TextMeshProUGUI keyText;
 	public TextMeshProUGUI scoreText;
     public TextMeshProUGUI finalScoreText;
     public Button pauseButton;
 	public int score;
 
-	public GameObject pausePanel;
+    public GameObject pausePanel;
 	public GameObject gameOverPanel;
 	private bool textAnimations = false;
 
@@ -106,6 +107,7 @@ public class UIManager : MonoBehaviour
 
 	public void ShowGameOver()
     {
+		playerSettings.totalTadpoles += score;
 		finalScoreText.text = "Collected tadpoles: " + scoreText.text;
         gameOverPanel.SetActive(true);
         pauseButton.gameObject.SetActive(false);

@@ -17,6 +17,7 @@ public class CameraVisibility : MonoBehaviour
 	// Update is called once per frame
 	void Update()
 	{
+		Debug.Log("camera updating");
 		if (froggy != null)
 		{
 			mainCamera.transform.Translate(Vector3.forward * speed * Time.deltaTime, Space.World);
