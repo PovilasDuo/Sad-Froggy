@@ -12,7 +12,7 @@ public class CarMovement : MonoBehaviour
     void Start()
     {
         tileSize = GameObject.Find("TilemapManager").GetComponent<TilemapManager>().tileSize;
-        tilesNumber = GameObject.Find("TilemapManager").GetComponent<TilemapManager>().tilesNumberZ;
+        tilesNumber = GameObject.Find("TilemapManager").GetComponent<TilemapManager>().tilesNumberX;
 		endPosition = tilesNumber * tileSize + tileSize;
 		if (backwards)
         {

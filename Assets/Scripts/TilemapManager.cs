@@ -72,11 +72,7 @@ public class TilemapManager : MonoBehaviour
 	/// <param name="top">If the top border should be emmitted</param>
 	public void GenerateMap(bool top, bool camerMovement)
 	{
-/*		if (GameObject.Find("Level " + (levelNr - 1)) != null)
-		{
-			GameObject.Find("Level " + (levelNr - 1)).GetComponent<CarManager>().running = false;
-		}*/
-
+		IterateDifficulity();
 		ClearOccupation();
 		SetTilemapSize(tilesNumberX, tilesNumberZ);
 		SetTilemapPosition();
@@ -99,7 +95,7 @@ public class TilemapManager : MonoBehaviour
 			{
 				Camera.main.GetComponent<CameraVisibility>().enabled = false;
 				float positionToMoveTo = (GameObject.Find("Level " + (levelNr - 2)).transform.position.z - (tilesNumberZ + 1) / 2 * tileSize) - Camera.main.transform.position.z;
-				StartCoroutine(SmoothCameraMovement(new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, Camera.main.transform.position.z + positionToMoveTo), 2f));
+				StartCoroutine(SmoothCameraMovement(new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, Camera.main.transform.position.z + positionToMoveTo), 0.5f));
 				Camera.main.GetComponent<CameraVisibility>().enabled = true;
 			}
 			CreateBorders(true, false, true, true);
@@ -107,6 +103,22 @@ public class TilemapManager : MonoBehaviour
 		else CreateBorders(true, !top, true, true);
 
 		PrepareNextLevel();
+	}
+
+	public void IterateDifficulity()
+	{
+		if (levelNr % 5 == 0)
+		{
+			roadCount++;
+		}
+		else if (levelNr % 2 == 0)
+		{
+			tilesNumberZ++;
+			levelGameobject.transform.position = new Vector3(levelGameobject.transform.position.x, levelGameobject.transform.position.y, levelGameobject.transform.position.z - tileSize);
+			rockCount++;
+			tadpoleCount++;
+			Camera.main.GetComponent<CameraVisibility>().speed++;
+		}
 	}
 
 	/// <summary>
@@ -273,7 +285,7 @@ public class TilemapManager : MonoBehaviour
 			{
 				Vector3 worldPos = tilemapOrigin + new Vector3(-1 * tileSize, 1f, r * tileSize);
 				bool backwards = false;
-				if (Random.Range(0, 2) == 1) 
+				if (Random.Range(0, 2) == 1)
 				{
 					worldPos = new Vector3(-worldPos.x, worldPos.y, worldPos.z);
 					backwards = true;
