@@ -1,7 +1,9 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-
+using TMPro;
+using System.Collections;
+using System.Collections.Generic;
 public class MainMenu : MonoBehaviour
 {
     public GameObject SettingsPanel;
@@ -9,11 +11,24 @@ public class MainMenu : MonoBehaviour
 	public GameObject ShopPanel;
     public GameObject MainPanel;
  	public Slider gameVolumeSlider;
-
+	public TMP_Dropdown resolutionDropdown;
+	private Resolution[] resolutions;
     void Start()
 	{
 		gameVolumeSlider.value = AudioListener.volume;
 		gameVolumeSlider.onValueChanged.AddListener(delegate { GameVolumeChange(); });
+
+		resolutions = Screen.resolutions;
+
+		resolutionDropdown.ClearOptions();
+
+		List<string> resolutionOptions = new List<string>();
+		foreach (var resolution in resolutions)
+		{
+			resolutionOptions.Add(resolution.width + "x" + resolution.height);
+		}
+		resolutionDropdown.AddOptions(resolutionOptions);
+		resolutionDropdown.value = GetCurrentResolutionIndex();
 	}
 
     public void PlayGame()
@@ -71,4 +86,28 @@ public class MainMenu : MonoBehaviour
 	{
 		AudioListener.volume = gameVolumeSlider.value;
 	}   
+
+	private int GetCurrentResolutionIndex()
+	{
+		Resolution currentResolution = Screen.currentResolution;
+		for (int i = 0; i < resolutions.Length; i++)
+		{
+			if (resolutions[i].width == currentResolution.width &&
+				resolutions[i].height == currentResolution.height)
+			{
+				return i;
+			}
+		}
+		return 0;
+	}
+
+	public void OnResolutionChanged()
+	{
+		string selectedResolutionStr = resolutionDropdown.options[resolutionDropdown.value].text;
+		string[] resolutionParts = selectedResolutionStr.Split('x');
+		if (resolutionParts.Length == 2 && int.TryParse(resolutionParts[0], out int width) && int.TryParse(resolutionParts[1], out int height))
+		{
+			Screen.SetResolution(width, height, Screen.fullScreen);
+		}
+	}
 }
