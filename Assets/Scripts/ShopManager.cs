@@ -12,9 +12,11 @@ public class ShopManager : MonoBehaviour
 
     public Transform itemContainer;
     public GameObject itemPrefab;
+    public GameObject improvementPrefab;
     public Sprite[] images;
 
     private List<GameObject> shopItems = new();
+    private List<GameObject> shopImprovements = new();
 
     void Start()
     {
@@ -22,23 +24,19 @@ public class ShopManager : MonoBehaviour
         SetupShop();
     }
 
-    void UpdateTadpolesCount() => totalTadpolesText.text = "Tadpoles: " + playerSettings.totalTadpoles.ToString();
+    private void UpdateTadpolesCount() => totalTadpolesText.text = "Tadpoles: " + playerSettings.totalTadpoles.ToString();
 
-    void SetupShop()
+    private void SetupShop()
     {
         foreach (ShopItem item in playerSettings.items)
         {
-            GameObject newItem = Instantiate(itemPrefab, itemContainer);
-            Image imageComponent = newItem.transform.Find("Image").GetComponent<Image>();
-            imageComponent.sprite = images[item.imageIndex];
-            newItem.transform.Find("TitleText").GetComponent<TextMeshProUGUI>().text = item.title;
+            var newItem = CreateNewItem(item, itemPrefab);
 
-
-            Button buyButton = newItem.transform.Find("Button").GetComponent<Button>();
+            var buyButton = newItem.transform.Find("Button").GetComponent<Button>();
             buyButton.onClick.AddListener(() => BuyItem(item));
-            buyButton.transform.Find("ButtonText").GetComponent<TextMeshProUGUI>().text = item.price.ToString();
+            GetButtonText(buyButton).text = item.price.ToString();
 
-            Button useItemButton = newItem.transform.Find("UseItemButton").GetComponent<Button>();
+            var useItemButton = newItem.transform.Find("UseItemButton").GetComponent<Button>();
             useItemButton.onClick.AddListener(() => UseItem(item));
 
             if (item.bought)
@@ -46,9 +44,9 @@ public class ShopManager : MonoBehaviour
                 buyButton.gameObject.SetActive(false);
                 useItemButton.gameObject.SetActive(true);
                 if (item.inUse)
-                    useItemButton.transform.Find("ButtonText").GetComponent<TextMeshProUGUI>().text = "Remove";
+                    GetButtonText(useItemButton).text = "Remove";
                 else
-                    useItemButton.transform.Find("ButtonText").GetComponent<TextMeshProUGUI>().text = "Apply";
+                    GetButtonText(useItemButton).text = "Apply";
             }
             else
             {
@@ -65,27 +63,26 @@ public class ShopManager : MonoBehaviour
 
             shopItems.Add(newItem);
         }
-    }
 
-    void UpdateButtons()
-    {
-        foreach (var item in playerSettings.items)
+        foreach (ShopImprovement impr in playerSettings.improvements)
         {
-            if (item.bought)
-            {
-                Button useItemButton = shopItems[item.id].transform.Find("UseItemButton").GetComponent<Button>();
-                if (item.inUse)
-                    useItemButton.transform.Find("ButtonText").GetComponent<TextMeshProUGUI>().text = "Remove";
-                else
-                    useItemButton.transform.Find("ButtonText").GetComponent<TextMeshProUGUI>().text = "Apply";
-            }
+            shopImprovements.Add(CreateNewItem(impr, improvementPrefab));
+            UpdateImprovement(impr, true);
         }
     }
 
-    void BuyItem(ShopItem item)
+    private GameObject CreateNewItem(ShopItemBase item, GameObject prefab)
+    {
+        GameObject newItem = Instantiate(prefab, itemContainer);
+        Image imageComponent = newItem.transform.Find("Image").GetComponent<Image>();
+        imageComponent.sprite = images[item.imageIndex];
+        newItem.transform.Find("TitleText").GetComponent<TextMeshProUGUI>().text = item.title;
+        return newItem;
+    }
+
+    private void BuyItem(ShopItem item)
     {
         playerSettings.totalTadpoles -= item.price;
-        Debug.Log("Bought item: " + item.title);
 
         totalTadpolesText.text = "Tadpoles: " + playerSettings.totalTadpoles.ToString();
 
@@ -98,9 +95,73 @@ public class ShopManager : MonoBehaviour
         SetBackground(shopItems[item.id], item.id);
     }
 
-    void UseItem(ShopItem item, bool? inUse = null)
+    private void BuyImprovement(ShopImprovement impr, int index)
+    {
+        playerSettings.totalTadpoles -= impr.price[index];
+
+        totalTadpolesText.text = "Tadpoles: " + playerSettings.totalTadpoles.ToString();
+
+        playerSettings.improvements[impr.id].bought[index] = true;
+        UseImprovement(impr);
+
+        UpdateImprovement(impr);
+    }
+
+    private void UpdateButtons()
+    {
+        foreach (var item in playerSettings.items)
+        {
+            if (item.bought)
+            {
+                var useItemButton = shopItems[item.id].transform.Find("UseItemButton").GetComponent<Button>();
+
+                if (item.inUse)
+                    GetButtonText(useItemButton).text = "Remove";
+                else
+                    GetButtonText(useItemButton).text = "Apply";
+            }
+        }
+    }
+
+    private void UpdateImprovement(ShopImprovement impr, bool isSetUp = false)
+    {
+        Debug.Log(impr.id);
+        var buyButton = shopImprovements[impr.id].transform.Find("Button").GetComponent<Button>();
+
+        var allBought = true;
+        for (int i = 0; i < impr.price.Length; i++)
+        {
+            if (impr.bought[i] == false)
+            {
+                allBought = false;
+
+                if (isSetUp)
+                {
+                    buyButton.onClick.AddListener(() => BuyImprovement(impr, impr.GetUnboughtIndex()));
+                }
+
+                GetButtonText(buyButton).text = impr.price[i].ToString();
+                if (playerSettings.totalTadpoles < impr.price[i])
+                {
+                    buyButton.interactable = false;
+                }
+                break;
+            }
+        }
+
+        if (allBought)
+        {
+            GetButtonText(buyButton).text = "-";
+            buyButton.interactable = false;
+        }
+
+        SetBackground(shopImprovements[impr.id], impr.id, allBought);
+    }
+
+    private void UseItem(ShopItem item, bool? inUse = null)
     {
         item.inUse = inUse != null ? inUse.Value : !item.inUse;
+
         if (item.inUse)
         {
             if (item.id == 0)
@@ -116,7 +177,7 @@ public class ShopManager : MonoBehaviour
             else if (item.id == 2)
             {
                 playerSettings.skin = Skin.Pink;
-                playerSettings.items[3].inUse = false;    
+                playerSettings.items[3].inUse = false;
             }
             else if (item.id == 3)
             {
@@ -135,12 +196,43 @@ public class ShopManager : MonoBehaviour
         UpdateButtons();
     }
 
-    void SetBackground(GameObject item, int id)
+    private void UseImprovement(ShopImprovement impr)
+    {
+        if (impr.title == "Speed")
+        {
+            playerSettings.moveSpeed += 1;
+        }
+        else if (impr.title == "Tadpoles")
+        {
+            playerSettings.tadpoleIncrease += 1;
+        }
+    }
+
+    private void SetBackground(GameObject item, int id)
     {
         if (playerSettings.items[id].bought)
         {
             item.GetComponent<Image>().color = new Color(30f / 255f, 138f / 255f, 66f / 255f);
         }
     }
+
+    private void SetBackground(GameObject item, int id, bool allBought)
+    {
+        if (allBought)
+        {
+            item.GetComponent<Image>().color = new Color(30f / 255f, 138f / 255f, 66f / 255f);
+        }
+
+        for (int i = 0; i < playerSettings.improvements[id].bought.Length; i++)
+        {
+            if (playerSettings.improvements[id].bought[i] == true)
+            {
+                var panel = item.transform.Find("increase" + i).gameObject;
+                panel.GetComponent<Image>().color = new Color(30f / 255f, 200f / 255f, 66f / 255f);
+            }
+        }
+    }
+
+    private TextMeshProUGUI GetButtonText(Button button) => button.transform.Find("ButtonText").GetComponent<TextMeshProUGUI>();
 
 }

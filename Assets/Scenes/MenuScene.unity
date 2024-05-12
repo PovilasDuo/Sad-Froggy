@@ -4395,10 +4395,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aeeb62a343ea0344fa05a1d60340c34a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerSettings: {fileID: 11400000, guid: 51700c31341b3d24291a2a5d52329357, type: 2}
+  playerSettings: {fileID: 11400000, guid: 94e4afe5384656f4699474a463204162, type: 2}
   totalTadpolesText: {fileID: 1006653718}
   itemContainer: {fileID: 848112513}
   itemPrefab: {fileID: 3509097699603218159, guid: 317686ef3be2ab048a57454888fb0af1,
+    type: 3}
+  improvementPrefab: {fileID: 3509097699603218159, guid: 41f133fbff77c0a439c127fd749e760b,
     type: 3}
   images:
   - {fileID: 930244879, guid: 3b4739015ea869949b9d74fc7cfdacc7, type: 3}
@@ -7047,7 +7049,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.000061035156}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1657346078

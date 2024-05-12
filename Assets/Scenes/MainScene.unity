@@ -556,7 +556,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74862bee8e9ca4e439e9da01eac68d55, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerSettings: {fileID: 11400000, guid: 51700c31341b3d24291a2a5d52329357, type: 2}
+  playerSettings: {fileID: 11400000, guid: 94e4afe5384656f4699474a463204162, type: 2}
   keyText: {fileID: 1054746847}
   scoreText: {fileID: 1088839085}
   finalScoreText: {fileID: 459909502}
@@ -3289,6 +3289,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 336a5f6c8b2c01042ae5b0c9d087ac58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerSettings: {fileID: 11400000, guid: 94e4afe5384656f4699474a463204162, type: 2}
   tilemap: {fileID: 1598683174}
   tilesNumberX: 6
   tilesNumberZ: 6
@@ -4643,6 +4644,12 @@ PrefabInstance:
       propertyPath: moveDistance
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 2095531475352422000, guid: 042cf52f20b0ae54bbce9ccb0a809a87,
+        type: 3}
+      propertyPath: playerSettings
+      value: 
+      objectReference: {fileID: 11400000, guid: 94e4afe5384656f4699474a463204162,
+        type: 2}
     - target: {fileID: 3564175874071990094, guid: 042cf52f20b0ae54bbce9ccb0a809a87,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -4768,7 +4775,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 150f9d15f76794d42abec1a151b26942, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerSettings: {fileID: 11400000, guid: 51700c31341b3d24291a2a5d52329357, type: 2}
+  playerSettings: {fileID: 11400000, guid: 94e4afe5384656f4699474a463204162, type: 2}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

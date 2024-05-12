@@ -6,7 +6,10 @@ using UnityEngine.Tilemaps;
 
 public class TilemapManager : MonoBehaviour
 {
-	[Header("Tilemap")]
+    [Header("Settings")]
+    public PlayerSettings playerSettings;
+
+    [Header("Tilemap")]
 	public Tilemap tilemap;
 	public int tilesNumberX = 11;
 	public int tilesNumberZ = 11;
@@ -29,9 +32,9 @@ public class TilemapManager : MonoBehaviour
 	public int roadCount = 2;
 	public int riverCount = 2;
 	public int rockCount = 5;
-	public int tadpoleCount = 7;
+    public int tadpoleCount = 7;
 
-	[Header("Doors")]
+    [Header("Doors")]
 	public GameObject exitDoor;
 	public GameObject nextLevelDoor;
 	public GameObject gates;
@@ -116,8 +119,8 @@ public class TilemapManager : MonoBehaviour
 			tilesNumberZ++;
 			levelGameobject.transform.position = new Vector3(levelGameobject.transform.position.x, levelGameobject.transform.position.y, levelGameobject.transform.position.z - tileSize);
 			rockCount++;
-			tadpoleCount++;
-			Camera.main.GetComponent<CameraVisibility>().speed++;
+			tadpoleCount += playerSettings.tadpoleIncrease;
+            Camera.main.GetComponent<CameraVisibility>().speed++;
 		}
 	}
 

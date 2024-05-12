@@ -10,45 +10,46 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c4265cea3a484cf4f92553d243fcccdd, type: 3}
-  m_Name: PlayerSettings 1
+  m_Name: PlayerSettings
   m_EditorClassIdentifier: 
-  totalTadpoles: 10
+  totalTadpoles: 0
   skin: 0
-  decoration: 0
+  decoration: 2
+  moveSpeed: 2
+  tadpoleIncrease: 0
   items:
   - id: 0
     title: Crown
     imageIndex: 0
-    price: 1
+    price: 150
     inUse: 0
     bought: 0
   - id: 1
     title: Mushroom hat
     imageIndex: 1
-    price: 1
+    price: 200
     inUse: 0
     bought: 0
   - id: 2
     title: 'Pink skin '
     imageIndex: 2
-    price: 1
+    price: 30
     inUse: 0
     bought: 0
   - id: 3
     title: Blue skin
     imageIndex: 3
-    price: 3
-    inUse: 0
-    bought: 0
-  - id: 4
-    title: Speed
-    imageIndex: 4
-    price: 5
-    inUse: 0
-    bought: 0
-  - id: 5
-    title: Tadpoles
-    imageIndex: 5
     price: 50
     inUse: 0
     bought: 0
+  improvements:
+  - id: 0
+    title: Speed
+    imageIndex: 4
+    price: 320000006400000096000000
+    bought: 000000
+  - id: 1
+    title: Tadpoles
+    imageIndex: 5
+    price: 320000006400000096000000
+    bought: 000000

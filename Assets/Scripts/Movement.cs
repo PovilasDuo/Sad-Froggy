@@ -2,11 +2,13 @@ using System.Collections;
 using UnityEngine;
 public class Movement : MonoBehaviour
 {
-	public Animator animator;
+    public PlayerSettings playerSettings;
+
+    public Animator animator;
 	public AudioSource jumpSound;
 	public AudioSource deathSound;
 
-	public float moveSpeed = 1f;
+	public float moveSpeed;
 	public float moveDistance = 5f;
 
 	private FrogActions controls;
@@ -28,6 +30,7 @@ public class Movement : MonoBehaviour
 
 	private void Start()
 	{
+		moveSpeed = playerSettings.moveSpeed;
 		AudioSource[] audioSources = GetComponents<AudioSource>();
 		jumpSound = audioSources[0];
 		deathSound = audioSources[1];
