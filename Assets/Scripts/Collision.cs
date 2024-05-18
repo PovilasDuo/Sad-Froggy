@@ -17,7 +17,6 @@ public class Collision : MonoBehaviour
 	private void OnTriggerEnter(Collider other)
 	{
 		GameObject collided = other.gameObject;
-
 		if (collided.CompareTag("DeadlyObstacle"))
 		{
 			GameObject psPrefab = Resources.Load<GameObject>("ParticleSystem/Squash");

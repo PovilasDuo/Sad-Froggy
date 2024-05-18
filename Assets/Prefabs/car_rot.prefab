@@ -116,6 +116,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 10
   endPosition: 0
+  backwards: 0
 --- !u!65 &4914805960149450956
 BoxCollider:
   m_ObjectHideFlags: 0

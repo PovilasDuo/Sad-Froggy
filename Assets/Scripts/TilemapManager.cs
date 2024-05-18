@@ -49,7 +49,7 @@ public class TilemapManager : MonoBehaviour
 	public GameObject levelGameobject;
 	public float levelNr = 1;
 
-	public bool destroying = false;
+	private ForestManager forestManager;
 
 	public enum LinearObstacles
 	{
@@ -60,13 +60,9 @@ public class TilemapManager : MonoBehaviour
 
 	private void Awake()
 	{
-		levelGameobject = new GameObject();
-		levelGameobject.name = "Level " + levelNr.ToString();
-	}
-
-	void Start()
-	{
+		levelGameobject = new GameObject("Level " + levelNr.ToString());
 		tilemap = GetComponent<Tilemap>();
+		forestManager = GameObject.Find("ForestManager").GetComponent<ForestManager>();
 	}
 
 	/// <summary>
@@ -98,14 +94,23 @@ public class TilemapManager : MonoBehaviour
 			{
 				Camera.main.GetComponent<CameraVisibility>().enabled = false;
 				float positionToMoveTo = (GameObject.Find("Level " + (levelNr - 2)).transform.position.z - (tilesNumberZ + 1) / 2 * tileSize) - Camera.main.transform.position.z;
-				StartCoroutine(SmoothCameraMovement(new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, Camera.main.transform.position.z + positionToMoveTo), 0.5f));
+				if(positionToMoveTo > 0) StartCoroutine(SmoothCameraMovement(new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, Camera.main.transform.position.z + positionToMoveTo), 0.5f));
 				Camera.main.GetComponent<CameraVisibility>().enabled = true;
 			}
 			CreateBorders(true, false, true, true);
 		}
 		else CreateBorders(true, !top, true, true);
-
+		CreateForest();
 		PrepareNextLevel();
+	}
+
+	private void CreateForest()
+	{
+		forestManager.referenceObject = levelGameobject;
+		forestManager.tileSize = tileSize;
+		forestManager.tilesNumberX = tilesNumberX;
+		forestManager.tilesNumberZ = tilesNumberZ + 1;
+		forestManager.CreateForest();
 	}
 
 	public void IterateDifficulity()
@@ -120,7 +125,8 @@ public class TilemapManager : MonoBehaviour
 			levelGameobject.transform.position = new Vector3(levelGameobject.transform.position.x, levelGameobject.transform.position.y, levelGameobject.transform.position.z - tileSize);
 			rockCount++;
 			tadpoleCount += playerSettings.tadpoleIncrease;
-            Camera.main.GetComponent<CameraVisibility>().speed++;
+            Camera.main.GetComponent<CameraVisibility>().speed += 2;
+			GameObject.Find("Froggy").GetComponent<Movement>().moveSpeed += 0.1f;
 		}
 	}
 
@@ -281,7 +287,7 @@ public class TilemapManager : MonoBehaviour
 	public GameObject CreateCar(GameObject levelGameobject, LinearObstacles[] occupiedRows)
 	{
 		var tilemapOrigin = tilemap.transform.position;
-		GameObject go = new GameObject();
+		GameObject go = new GameObject("Car");
 		for (int r = 0; r < occupiedRows.Length; r++)
 		{
 			if (occupiedRows[r] == LinearObstacles.Road)
@@ -472,12 +478,14 @@ public class TilemapManager : MonoBehaviour
 	/// <returns>coordinates of free cell</returns>
 	private Vector3 GetRandomCell()
 	{
+		int counter = 0;
 		int cellX, cellZ;
 		do
 		{
 			cellX = UnityEngine.Random.Range(0, tilesNumberX);
 			cellZ = UnityEngine.Random.Range(1, tilesNumberZ);
-		} while (occupiedTiles[cellX][cellZ]);
+			counter++;
+		} while (occupiedTiles[cellX][cellZ] || counter < 30);
 		return new Vector3(cellX, 0, cellZ);
 	}
 
