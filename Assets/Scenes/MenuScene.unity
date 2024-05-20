@@ -2392,7 +2392,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &683153969
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6292,7 +6292,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1359419282
 RectTransform:
   m_ObjectHideFlags: 0
@@ -8361,10 +8361,10 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_text: "* Use arrow keys or wasd keys to control the frog\n\n* Collect the key                 
-    to unlock the door to the next level\n\n* Go through the yellow door         
-    to enter a new level\n\n       You lose half of the collected tadpoles when you
-    lose the game\n\n* Go through the red door            to end the game and save
-    all your collected  tadpoles\n \n"
+    to unlock the doors\n\n* Go through the yellow door          to enter a new level\n\n      
+    You lose half of the collected tadpoles when you lose the game\n\n* Go through
+    the red door            to end the game and save all your collected  tadpoles\n
+    \n"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: c53a9faa6b86dd249a0e0536a661948a, type: 2}
   m_sharedMaterial: {fileID: 4039356964702040176, guid: c53a9faa6b86dd249a0e0536a661948a,
