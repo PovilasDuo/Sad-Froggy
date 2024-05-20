@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   totalTadpoles: 0
   skin: 0
-  decoration: 2
+  decoration: 0
   moveSpeed: 2
   tadpoleIncrease: 0
   items:

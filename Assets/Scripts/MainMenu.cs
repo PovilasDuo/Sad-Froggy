@@ -1,9 +1,9 @@
+using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using TMPro;
-using System.Collections;
-using System.Collections.Generic;
+
 public class MainMenu : MonoBehaviour
 {
     public GameObject SettingsPanel;
@@ -29,7 +29,15 @@ public class MainMenu : MonoBehaviour
 		}
 		resolutionDropdown.AddOptions(resolutionOptions);
 		resolutionDropdown.value = GetCurrentResolutionIndex();
-	}
+
+        if (PlayerPrefs.HasKey("OpenShopPanel") && PlayerPrefs.GetInt("OpenShopPanel") == 1)
+        {
+            PlayerPrefs.DeleteKey("OpenShopPanel");
+            PlayerPrefs.Save();
+            
+			ShowShopPanel();
+        }
+    }
 
     public void PlayGame()
     {

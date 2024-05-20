@@ -8,6 +8,8 @@ public class FroggyCollision : Collision
 	void Start()
 	{
 		uIManagerInstance = GameObject.Find("UIManager").GetComponent<UIManager>();
+		uIManagerInstance.playTime = 0;
+		uIManagerInstance.startTime = Time.time;
 	}
 
 	/// <summary>
@@ -29,7 +31,7 @@ public class FroggyCollision : Collision
 			{
 				if (collided.tag == "ExitLevelDoor")
 				{
-					uIManagerInstance.BackToMainMenu();
+					uIManagerInstance.FinishGame();
 					Destroy(collided);
 					this.gameObject.GetComponent<Movement>().hasKey = false;
 					uIManagerInstance.KeyTextAppear(false);
