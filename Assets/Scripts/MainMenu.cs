@@ -23,10 +23,18 @@ public class MainMenu : MonoBehaviour
 		resolutionDropdown.ClearOptions();
 
 		List<string> resolutionOptions = new List<string>();
-		foreach (var resolution in resolutions)
-		{
-			resolutionOptions.Add(resolution.width + "x" + resolution.height);
-		}
+        HashSet<string> resolutionSet = new HashSet<string>(); // To store unique resolutions
+
+        foreach (var resolution in resolutions)
+        {
+            string resolutionStr = resolution.width + "x" + resolution.height;
+            if (!resolutionSet.Contains(resolutionStr))
+            {
+                resolutionOptions.Add(resolutionStr);
+                resolutionSet.Add(resolutionStr); // Add to HashSet to keep track
+            }
+        }
+
 		resolutionDropdown.AddOptions(resolutionOptions);
 		resolutionDropdown.value = GetCurrentResolutionIndex();
 
